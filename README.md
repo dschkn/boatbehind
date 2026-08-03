@@ -1,15 +1,17 @@
 # boatbehind
 
-Minimal homepage for **boatbehind.online** by Dmitrii Shchukin.
+Personal website for **boatbehind.online** by Dmitrii Shchukin.
 
 ## Files
 
 - `index.html` — page markup
 - `styles.css` — visual style
+- `dino.png` — homepage illustration
+- `README.md` — project notes
 
 ## Current design
 
-A dark grey full-screen page with a small yellow monospace block in the upper-left corner. It shows the domain name, the word `homepage`, and the author credit `dmitrii shchukin`.
+A dark grey full-screen page with small yellow Courier New text, the site title, a personal website label, a welcome message, and a green dinosaur illustration.
 
 ## Manual deployment target
 
