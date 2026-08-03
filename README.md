@@ -1,6 +1,6 @@
 # boatbehind
 
-Minimal homepage for **boatbehind.online**.
+Minimal homepage for **boatbehind.online** by Dmitrii Shchukin.
 
 ## Files
 
@@ -9,14 +9,21 @@ Minimal homepage for **boatbehind.online**.
 
 ## Current design
 
-A dark grey full-screen page with a small yellow monospace title in the upper-left corner.
+A dark grey full-screen page with a small yellow monospace block in the upper-left corner. It shows the domain name, the word `homepage`, and the author credit `dmitrii shchukin`.
 
 ## Manual deployment target
 
-The files can be served from the VPS directory:
+The live files are served from the VPS directory:
 
 ```text
 /var/www/boatbehind/
 ```
 
-A reverse proxy/web server such as Caddy can serve that directory for `boatbehind.online` and provide HTTPS.
+Caddy serves that directory for `boatbehind.online` and provides HTTPS.
+
+Until CI/CD is added, update the live copy manually on the VPS:
+
+```bash
+cd /var/www/boatbehind
+git pull --ff-only origin main
+```
