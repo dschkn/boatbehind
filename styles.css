@@ -1,8 +1,11 @@
 :root {
+  --page-background: #262626;
+  --page-text: #e4e46b;
+
   color-scheme: dark;
   font-family: "Courier New", Courier, monospace;
-  background: #262626;
-  color: #e4e46b;
+  background: var(--page-background);
+  color: var(--page-text);
 }
 
 * {
@@ -16,7 +19,7 @@ body {
 
 body {
   margin: 0;
-  background: #262626;
+  background: var(--page-background);
 }
 
 .homepage {
