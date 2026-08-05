@@ -1,6 +1,6 @@
 :root {
   --page-background: #262626;
-  --page-text: #e4e46b;
+  --page-text: #c8c8c8;
 }
 
 * {
@@ -21,27 +21,74 @@ body {
 }
 
 .homepage {
-  padding: 24px;
+  min-height: 100vh;
+  padding: 8px 10px 20px;
 }
 
-.homepage p {
+p {
   margin: 0;
+}
+
+.site-title,
+.intro,
+.primary-nav,
+.github-link,
+.site-footer {
   font-size: 11px;
   font-weight: 700;
   line-height: 1.35;
 }
 
-.author {
-  margin-top: 3.4em !important;
+.intro {
+  margin-top: 1.2em;
 }
 
-.welcome-block {
-  margin-top: 7.8em;
+.primary-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 6.25em;
 }
 
-.welcome-block img {
+.primary-nav a,
+.github-link {
+  color: inherit;
+}
+
+.primary-nav a:focus-visible,
+.github-link:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
+}
+
+.github-link {
+  display: inline-block;
+  margin-top: 11.8em;
+  text-decoration: none;
+}
+
+.github-link:hover {
+  text-decoration: underline;
+}
+
+.site-footer {
+  margin-top: 2.65em;
+}
+
+.site-footer img {
   display: block;
   width: 48px;
   height: 48px;
-  margin-top: 1.5em;
+  margin-top: 0.75em;
+  object-fit: contain;
+}
+
+@media (max-height: 520px) {
+  .primary-nav {
+    margin-top: 4em;
+  }
+
+  .github-link {
+    margin-top: 7em;
+  }
 }
