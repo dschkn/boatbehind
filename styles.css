@@ -47,7 +47,7 @@ p {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 6.25em;
+  margin-top: 6em;
 }
 
 .primary-nav a,
@@ -63,7 +63,7 @@ p {
 
 .github-link {
   display: inline-block;
-  margin-top: 11.8em;
+  margin-top: 11.4em;
   text-decoration: none;
 }
 
@@ -72,14 +72,14 @@ p {
 }
 
 .site-footer {
-  margin-top: 2.65em;
+  margin-top: 2.45em;
 }
 
 .site-footer img {
   display: block;
   width: 48px;
   height: 48px;
-  margin-top: 0.75em;
+  margin-top: 0.55em;
   object-fit: contain;
 }
 
