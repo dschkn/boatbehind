@@ -17,12 +17,12 @@ body {
   background: var(--page-background);
   color: var(--page-text);
   font-family: "Courier New", Courier, monospace;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 .homepage {
   min-height: 100vh;
-  padding: 8px 10px 20px;
+  padding: 10px 12px 24px;
 }
 
 p {
@@ -34,7 +34,7 @@ p {
 .primary-nav,
 .github-link,
 .site-footer {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.35;
 }
@@ -63,7 +63,7 @@ p {
 
 .github-link {
   display: inline-block;
-  margin-top: 11.4em;
+  margin-top: 14em;
   text-decoration: none;
 }
 
@@ -72,14 +72,14 @@ p {
 }
 
 .site-footer {
-  margin-top: 2.45em;
+  margin-top: 3.5em;
 }
 
 .site-footer img {
   display: block;
   width: 48px;
   height: 48px;
-  margin-top: 0.55em;
+  margin-top: 1em;
   object-fit: contain;
 }
 
@@ -89,6 +89,6 @@ p {
   }
 
   .github-link {
-    margin-top: 7em;
+    margin-top: 9em;
   }
 }
