@@ -1,6 +1,10 @@
 :root {
-  --page-background: #262626;
-  --page-text: #c8c8c8;
+  --page-background: #343434;
+  --panel-background: #202124;
+  --page-text: #c4c4c4;
+  --muted-text: #81868c;
+  --accent: #6faecb;
+  --rule: #4a4d50;
 }
 
 * {
@@ -18,12 +22,21 @@ body {
   color: var(--page-text);
   font-family: "Courier New", Courier, monospace;
   font-size: 14px;
+  line-height: 1.45;
 }
 
-.homepage,
-.bio-page {
-  min-height: 100vh;
-  padding: 10px 12px 24px;
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: 3px;
 }
 
 p,
@@ -32,72 +45,114 @@ h2 {
   margin: 0;
 }
 
-.site-title,
-.intro,
-.primary-nav,
-.github-link,
-.site-footer,
-.bio-page {
+.terminal-shell {
+  width: min(900px, calc(100% - 40px));
+  min-height: 540px;
+  margin: 7vh auto;
+  padding: 28px 36px 30px;
+  background: var(--panel-background);
+  border-radius: 8px;
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.28);
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 20px;
+}
+
+.terminal-brand {
+  font-weight: 700;
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--page-text);
+}
+
+.terminal-nav {
+  display: flex;
+  gap: 22px;
+  white-space: nowrap;
+}
+
+.terminal-grid {
+  display: grid;
+  grid-template-columns: minmax(150px, 0.85fr) minmax(260px, 1.8fr) minmax(150px, 0.8fr);
+  gap: 42px;
+  align-items: start;
+  margin-top: 72px;
+}
+
+.section-title {
+  margin-bottom: 13px;
+  color: var(--page-text);
   font-size: 14px;
   font-weight: 700;
   line-height: 1.35;
 }
 
-.intro {
-  margin-top: 1.2em;
+.muted {
+  color: var(--muted-text);
 }
 
-.primary-nav {
+.about-panel {
+  max-width: 420px;
+}
+
+.projects-panel {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: 6em;
 }
 
-.primary-nav a,
-.github-link,
-.back-link {
-  color: inherit;
+.projects-panel a + a {
+  margin-top: 4px;
 }
 
-.primary-nav a:focus-visible,
-.github-link:focus-visible,
-.back-link:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: 3px;
+.terminal-footer {
+  margin-top: auto;
+  padding-top: 90px;
 }
 
-.github-link {
-  display: inline-block;
-  margin-top: 14em;
-  text-decoration: none;
+.footer-rule {
+  border-top: 1px dashed var(--rule);
 }
 
-.github-link:hover,
-.back-link:hover {
-  text-decoration: underline;
+.footer-content {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 30px;
+  padding-top: 22px;
 }
 
-.site-footer {
-  margin-top: 3.5em;
-}
-
-.site-footer img {
+.footer-content img {
   display: block;
-  width: 48px;
-  height: 48px;
-  margin-top: 1em;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
 }
 
+/* bio page */
 .bio-page {
-  max-width: 820px;
-  padding-bottom: 56px;
+  width: min(820px, calc(100% - 40px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 36px 0 64px;
+  color: var(--page-text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
 }
 
 .back-link {
   display: inline-block;
-  text-decoration: none;
 }
 
 .bio-header {
@@ -125,12 +180,36 @@ h2 {
   margin-top: 0.45em;
 }
 
-@media (max-height: 520px) {
-  .primary-nav {
-    margin-top: 4em;
+@media (max-width: 720px) {
+  .terminal-shell {
+    width: calc(100% - 20px);
+    min-height: calc(100vh - 20px);
+    margin: 10px auto;
+    padding: 22px 20px 24px;
+    border-radius: 6px;
   }
 
-  .github-link {
-    margin-top: 9em;
+  .terminal-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .terminal-grid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    margin-top: 52px;
+  }
+
+  .about-panel {
+    max-width: 520px;
+  }
+
+  .terminal-footer {
+    padding-top: 68px;
+  }
+
+  .bio-page {
+    width: calc(100% - 32px);
   }
 }

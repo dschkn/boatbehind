@@ -4,32 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="Dmitrii Shchukin">
-  <meta name="description" content="Dmitrii Shchukin personal website and project archive.">
+  <meta name="description" content="Dmitrii Shchukin — composer, software developer and self-hosted projects.">
   <title>boatbehind.online</title>
   <link rel="icon" type="image/png" href="boat.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <main class="homepage" aria-label="boatbehind.online homepage by Dmitrii Shchukin">
-    <header>
-      <p class="site-title">boatbehind.online<br>homepage</p>
-
-      <p class="intro">
-        dmitrii shchukin personal website<br>
-        welcome here
-      </p>
+  <main class="terminal-shell" aria-label="boatbehind.online homepage">
+    <header class="terminal-header">
+      <a class="terminal-brand" href="index.html">&gt; boatbehind.online<span class="cursor">_</span></a>
+      <nav class="terminal-nav" aria-label="Primary navigation">
+        <a href="bio.html">bio</a>
+        <a href="https://github.com/dschkn" target="_blank" rel="noreferrer">github</a>
+      </nav>
     </header>
 
-    <nav class="primary-nav" aria-label="Primary navigation">
-      <a href="bio.html">bio</a>
-      <a href="#projects">projects</a>
-    </nav>
+    <section class="terminal-grid">
+      <div class="identity-panel">
+        <p class="section-title">dmitrii shchukin</p>
+        <p class="muted">composer / developer</p>
+      </div>
 
-    <a class="github-link" href="https://github.com/dschkn" target="_blank" rel="noreferrer">github: /dschkn</a>
+      <article class="about-panel">
+        <h1 class="section-title">about</h1>
+        <p>composer and software developer working with sound, code, networks and small self-hosted systems.</p>
+      </article>
 
-    <footer class="site-footer">
-      <p>2026 © Dmitrii Shchukin</p>
-      <img src="boat.png" alt="Colorful sailing boat" width="48" height="48">
+      <aside class="projects-panel" aria-labelledby="projects-title">
+        <h2 id="projects-title" class="section-title">projects</h2>
+        <a href="https://sudo.boatbehind.online">sudo</a>
+        <a href="https://today.boatbehind.online">today</a>
+      </aside>
+    </section>
+
+    <footer class="terminal-footer">
+      <div class="footer-rule" aria-hidden="true"></div>
+      <div class="footer-content">
+        <div>
+          <p>2026 © dmitrii shchukin</p>
+          <p class="muted">boatbehind.online</p>
+        </div>
+        <img src="boat.png" alt="Colorful sailing boat" width="56" height="56">
+      </div>
     </footer>
   </main>
 </body>
