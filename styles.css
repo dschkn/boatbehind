@@ -2,7 +2,7 @@
   --page-background: #343434;
   --panel-background: #202124;
   --panel-top: #292a2d;
-  --page-text: #c4c4c4;
+  --page-text: #c7c7c7;
   --muted-text: #85898e;
   --accent: #73aeca;
   --rule: #4a4d50;
@@ -23,12 +23,12 @@ body {
   color: var(--page-text);
   font-family: "Courier New", Courier, monospace;
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
-body.home-body {
+body.site-body {
   min-height: 100vh;
-  padding: clamp(42px, 8vh, 80px) 24px;
+  padding: clamp(38px, 7vh, 72px) 24px;
 }
 
 a {
@@ -52,24 +52,20 @@ h2 {
 }
 
 .terminal-shell {
-  width: min(920px, 100%);
-  min-height: 560px;
+  width: min(960px, 100%);
   margin: 0 auto;
-  padding: 0 38px 30px;
+  padding: 0 38px 28px;
   overflow: hidden;
   background: var(--panel-background);
   border-radius: 9px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
-  display: flex;
-  flex-direction: column;
 }
 
 .terminal-shell::before {
   content: "";
   display: block;
-  flex: 0 0 38px;
   height: 38px;
-  margin: 0 -38px 26px;
+  margin: 0 -38px 24px;
   background:
     radial-gradient(circle at 20px 19px, #56575a 0 4px, transparent 4.5px),
     radial-gradient(circle at 36px 19px, #4d4e51 0 4px, transparent 4.5px),
@@ -97,20 +93,20 @@ h2 {
 
 .terminal-nav {
   display: flex;
-  gap: 22px;
+  gap: 20px;
   white-space: nowrap;
 }
 
-.terminal-grid {
+.home-grid {
   display: grid;
-  grid-template-columns: minmax(165px, 0.9fr) minmax(310px, 1.75fr) minmax(150px, 0.75fr);
-  gap: 46px;
+  grid-template-columns: 190px minmax(0, 1fr) 150px;
+  gap: 36px;
   align-items: start;
-  margin-top: 82px;
+  margin-top: 66px;
 }
 
 .section-title {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   color: var(--page-text);
   font-size: 14px;
   line-height: 1.35;
@@ -120,8 +116,9 @@ h2 {
   color: var(--muted-text);
 }
 
-.about-panel {
-  max-width: 430px;
+.intro-panel {
+  max-width: 390px;
+  justify-self: center;
 }
 
 .projects-panel {
@@ -131,12 +128,11 @@ h2 {
 }
 
 .projects-panel a + a {
-  margin-top: 4px;
+  margin-top: 3px;
 }
 
 .terminal-footer {
-  margin-top: auto;
-  padding-top: 92px;
+  margin-top: 96px;
 }
 
 .footer-rule {
@@ -145,71 +141,75 @@ h2 {
 
 .footer-content {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 30px;
-  padding-top: 22px;
+  align-items: center;
+  gap: 20px;
+  padding-top: 18px;
 }
 
 .footer-content img {
   display: block;
-  width: 56px;
-  height: 56px;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
   object-fit: contain;
 }
 
-body.bio-body {
-  min-height: 100vh;
+.footer-copy p + p {
+  margin-top: 2px;
 }
 
-.bio-page {
-  width: min(820px, calc(100% - 40px));
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 36px 0 64px;
-  color: var(--page-text);
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.4;
+/* about page */
+.about-shell {
+  padding-bottom: 34px;
 }
 
-.back-link {
-  display: inline-block;
+.about-layout {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 56px;
+  margin-top: 58px;
 }
 
-.bio-header {
-  margin-top: 3.5em;
+.about-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.bio-header h1,
-.bio-section h2 {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.35;
+.about-content {
+  max-width: 620px;
 }
 
-.bio-section {
-  margin-top: 4em;
+.about-intro {
+  max-width: 540px;
+  margin-bottom: 42px;
 }
 
-.bio-list {
-  margin: 1.25em 0 0;
+.about-section + .about-section {
+  margin-top: 34px;
+}
+
+.about-list {
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.bio-list li + li {
-  margin-top: 0.45em;
+.about-list li + li {
+  margin-top: 5px;
+}
+
+.about-footer {
+  margin-top: 74px;
 }
 
 @media (max-width: 760px) {
-  body.home-body {
+  body.site-body {
     padding: 10px;
   }
 
   .terminal-shell {
     width: 100%;
-    min-height: calc(100vh - 20px);
     padding: 0 20px 24px;
     border-radius: 7px;
   }
@@ -225,21 +225,29 @@ body.bio-body {
     gap: 12px;
   }
 
-  .terminal-grid {
+  .home-grid,
+  .about-layout {
     grid-template-columns: 1fr;
-    gap: 34px;
-    margin-top: 52px;
+    gap: 30px;
   }
 
-  .about-panel {
-    max-width: 520px;
+  .home-grid {
+    margin-top: 46px;
   }
 
-  .terminal-footer {
-    padding-top: 68px;
+  .about-layout {
+    margin-top: 42px;
   }
 
-  .bio-page {
-    width: calc(100% - 32px);
+  .intro-panel,
+  .about-content,
+  .about-intro {
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  .terminal-footer,
+  .about-footer {
+    margin-top: 58px;
   }
 }
