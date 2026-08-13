@@ -66,11 +66,7 @@ h2 {
   display: block;
   height: 38px;
   margin: 0 -38px 24px;
-  background:
-    radial-gradient(circle at 20px 19px, #56575a 0 4px, transparent 4.5px),
-    radial-gradient(circle at 36px 19px, #4d4e51 0 4px, transparent 4.5px),
-    radial-gradient(circle at 52px 19px, #454649 0 4px, transparent 4.5px),
-    var(--panel-top);
+  background: var(--panel-top);
 }
 
 .terminal-header {
