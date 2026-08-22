@@ -71,7 +71,7 @@ h2 {
 
 .terminal-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 24px;
 }
@@ -87,10 +87,36 @@ h2 {
   color: var(--page-text);
 }
 
-.terminal-nav {
+.header-controls {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 7px;
+}
+
+.terminal-nav,
+.language-switcher {
+  display: flex;
   white-space: nowrap;
+}
+
+.terminal-nav {
+  gap: 20px;
+}
+
+.language-switcher {
+  gap: 5px;
+  font: inherit;
+  color: var(--muted-text);
+}
+
+.language-switcher a {
+  color: var(--muted-text);
+}
+
+.language-switcher a.active {
+  color: var(--page-text);
+  text-decoration: none;
 }
 
 .home-grid {
@@ -116,6 +142,10 @@ h2 {
   max-width: 440px;
 }
 
+.empty-page {
+  min-height: 260px;
+}
+
 .terminal-footer {
   margin-top: 96px;
 }
@@ -125,18 +155,7 @@ h2 {
 }
 
 .footer-content {
-  display: flex;
-  align-items: center;
-  gap: 20px;
   padding-top: 18px;
-}
-
-.footer-content img {
-  display: block;
-  width: 54px;
-  height: 54px;
-  flex: 0 0 54px;
-  object-fit: contain;
 }
 
 .footer-copy p + p {
@@ -240,9 +259,12 @@ h2 {
   }
 
   .terminal-header {
-    align-items: flex-start;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .header-controls {
+    align-items: flex-start;
   }
 
   .terminal-nav {
@@ -272,6 +294,10 @@ h2 {
   .projects-content,
   .projects-intro {
     max-width: none;
+  }
+
+  .empty-page {
+    min-height: 180px;
   }
 
   .terminal-footer,
