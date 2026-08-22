@@ -7,18 +7,26 @@
   <meta name="description" content="About Dmitrii Shchukin — education, courses, work experience and technical stack.">
   <meta name="color-scheme" content="dark">
   <title>about — boatbehind.online</title>
-  <link rel="icon" type="image/png" href="boat.png">
-  <link rel="stylesheet" href="styles.css?v=20260813-4">
+  <link rel="stylesheet" href="styles.css?v=20260822-1">
 </head>
 <body class="site-body">
   <main class="terminal-shell about-shell" aria-label="About Dmitrii Shchukin">
     <header class="terminal-header">
       <a class="terminal-brand" href="index.html">&lt; back<span class="cursor">_</span></a>
-      <nav class="terminal-nav" aria-label="About navigation">
-        <a href="index.html">home</a>
-        <a href="projects.html">projects</a>
-        <a href="https://github.com/dschkn" target="_blank" rel="noreferrer">github</a>
-      </nav>
+      <div class="header-controls">
+        <nav class="terminal-nav" aria-label="Primary navigation">
+          <a href="about.html">about</a>
+          <a href="projects.html">projects</a>
+          <a href="art.html">art</a>
+          <a href="texts.html">texts</a>
+          <a href="https://github.com/dschkn" target="_blank" rel="noreferrer">github</a>
+        </nav>
+        <nav class="language-switcher" aria-label="Language">
+          <a class="active" href="about.html" lang="en" aria-current="page">EN</a>
+          <span>/</span>
+          <a href="de/about.html" lang="de">DE</a>
+        </nav>
+      </div>
     </header>
 
     <section class="about-layout">
@@ -28,12 +36,11 @@
       </aside>
 
       <div class="about-content">
-        <p class="about-intro">after graduating from the saint petersburg conservatory, continued studies at the robert schumann hochschule düsseldorf with professor oliver schneller, focusing on spectral analysis, algorithmic composition, computational acoustic modelling, musique mixte, and psychoacoustics. during this period worked as a research assistant developing distributed networked audio systems with bidirectional real-time data exchange, networked control, and coordinated processing across multiple computers. later worked as a guest lecturer at kreativInstitut ostwestfalen-lippe in detmold, teaching electroacoustics, audiovisual technologies, networked audio systems, and software development for acoustic applications.<br><br>professional practice subsequently expanded into software engineering, first through qa automation and later into backend development, with a current specialization in java-based server-side systems, databases, apis, distributed architectures, deployment, and infrastructure.</p>
+        <p class="about-intro">studied at the robert schumann hochschule düsseldorf with professor oliver schneller, focusing on spectral analysis, algorithmic composition, computational acoustic modelling, musique mixte, and psychoacoustics. during this period worked as a research assistant developing distributed networked audio systems with bidirectional real-time data exchange, networked control, and coordinated processing across multiple computers, while software development increasingly became part of the same practice. later worked as a guest lecturer at kreativInstitut ostwestfalen-lippe in detmold, teaching electroacoustics, audiovisual technologies, networked audio systems, and software development for acoustic applications, and moved further into software engineering through qa automation and backend development. current work focuses on java-based server-side systems, databases, apis, distributed architectures, deployment, and infrastructure.</p>
 
         <section class="about-section" aria-labelledby="education-title">
           <h1 id="education-title" class="section-title">education</h1>
           <ul class="about-list">
-            <li>2018 saint petersburg state conservatory</li>
             <li>2025 robert schumann hochschule duesseldorf</li>
           </ul>
         </section>
@@ -77,7 +84,6 @@
     <footer class="terminal-footer about-footer">
       <div class="footer-rule" aria-hidden="true"></div>
       <div class="footer-content">
-        <img src="boat.png" alt="Colorful sailing boat" width="54" height="54">
         <div class="footer-copy">
           <p>2026 © dmitrii shchukin</p>
           <p class="muted">boatbehind.online</p>
