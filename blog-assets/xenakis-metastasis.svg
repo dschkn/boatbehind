@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" role="img" aria-labelledby="title desc">
+  <title id="title">Abstract score diagram</title>
+  <desc id="desc">A cream paper-like field with sweeping black line trajectories inspired by hand-drawn orchestral diagrams.</desc>
+  <rect width="960" height="560" fill="#d9c39a"/>
+  <g opacity="0.18" stroke="#6f624d" stroke-width="1" stroke-dasharray="12 12">
+    <path d="M0 140H960M0 280H960M0 420H960"/>
+    <path d="M160 0V560M320 0V560M480 0V560M640 0V560M800 0V560"/>
+  </g>
+  <g fill="none" stroke="#171717" stroke-width="2.4">
+    <path d="M20 500 C180 390 250 190 430 160 C590 135 720 165 940 120"/>
+    <path d="M18 470 C160 380 245 215 420 185 C580 158 740 178 942 145"/>
+    <path d="M14 440 C145 372 235 240 410 210 C590 178 760 190 946 170"/>
+    <path d="M12 410 C130 366 230 270 398 236 C560 202 735 212 948 198"/>
+    <path d="M15 110 C185 130 250 230 405 290 C575 356 760 412 948 500"/>
+    <path d="M15 138 C185 150 260 240 420 305 C590 374 760 430 945 525"/>
+    <path d="M15 165 C190 174 270 252 430 320 C610 395 770 448 944 544"/>
+  </g>
+  <g fill="#171717" font-family="Courier New, monospace" font-size="18">
+    <text x="665" y="52">METASTASIS (1954)</text>
+    <text x="665" y="76">glissandi des cordes</text>
+    <text x="46" y="72">12 premiers violons</text>
+    <text x="46" y="96">12 seconds</text>
+    <text x="46" y="120">8 altos</text>
+    <text x="46" y="144">8 violoncelles</text>
+    <text x="46" y="168">6 contrebasses</text>
+    <text x="52" y="350">5cm = 50mm</text>
+  </g>
+  <g fill="#171717" font-family="Courier New, monospace" font-size="13" opacity="0.8">
+    <text x="260" y="122">VI1 VI2 VI3 VI4 VI5 VI6</text>
+    <text x="350" y="352">A1 A2 A3 A4 A5</text>
+    <text x="680" y="420">VC3 VC4 VC5 VC6</text>
+  </g>
+</svg>
