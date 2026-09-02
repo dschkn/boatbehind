@@ -4,13 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="Dmitrii Shchukin">
-  <meta name="description" content="Blog by Dmitrii Shchukin.">
+  <meta name="description" content="Notes on software, music, games, films and whatever else catches Dmitrii Shchukin's attention.">
   <meta name="color-scheme" content="dark">
   <title>blog — boatbehind.online</title>
-  <link rel="stylesheet" href="styles.css?v=20260902-6">
+  <link rel="stylesheet" href="styles.css?v=20260902-7">
+  <link rel="stylesheet" href="blog.css?v=20260902-1">
+  <script src="blog.js?v=20260902-1" defer></script>
 </head>
-<body class="site-body">
-  <main class="terminal-shell home-shell" aria-label="Blog by Dmitrii Shchukin">
+<body class="site-body blog-body">
+  <main class="terminal-shell blog-shell" aria-label="Blog by Dmitrii Shchukin">
     <header class="terminal-header">
       <a class="terminal-brand" href="index.html">&lt; back<span class="cursor">_</span></a>
       <div class="header-controls">
@@ -19,26 +21,84 @@
           <a href="projects.html">projects</a>
           <a href="texts.html">texts</a>
           <a href="https://github.com/dschkn" target="_blank" rel="noreferrer">github</a>
-          <a href="blog.html">blog</a>
+          <a href="blog.html" aria-current="page">blog</a>
         </nav>
       </div>
     </header>
 
-    <section class="home-grid">
-      <div class="identity-panel">
-        <p class="section-title">blog</p>
-        <p class="muted">notes / logs / unfinished thoughts</p>
-      </div>
+    <section class="blog-index-header">
+      <h1 class="blog-page-title">blog<span class="blog-cursor">_</span></h1>
+      <p class="blog-tagline">notes / logs / unfinished thoughts<br>about music, code, games, films and whatever happens along the way.</p>
+    </section>
 
-      <article class="intro-panel">
-        <p>coming soon.</p>
+    <section class="blog-feed" aria-label="Blog posts">
+      <article class="blog-card">
+        <div class="blog-card-copy">
+          <p class="blog-date">[ 2026-09-02 ]</p>
+          <h2 class="blog-card-title"><a href="blog-xenakis.html">xenakis, metastasis,<br>and drawing sound</a></h2>
+          <p class="blog-card-excerpt">i keep coming back to xenakis's metastasis. not just the music, but the way it thinks through space, density and transformation. architecture for sound.</p>
+          <div class="blog-card-actions">
+            <button class="blog-like-button" type="button" data-post="xenakis" data-base="14" aria-label="Like Xenakis post" aria-pressed="false"><span class="heart">♡</span><span class="like-count">14</span> likes</button>
+            <a class="blog-read-more" href="blog-xenakis.html">[ read post ]</a>
+          </div>
+        </div>
+        <div class="blog-media">
+          <a href="blog-xenakis.html" aria-label="Open Xenakis post"><img src="blog-assets/xenakis-metastasis.svg" alt="Abstract hand-drawn score diagram with sweeping line trajectories"></a>
+        </div>
+      </article>
+
+      <article class="blog-card compact-media">
+        <div class="blog-card-copy">
+          <p class="blog-date">[ 2026-09-01 ]</p>
+          <h2 class="blog-card-title"><a href="blog-feature.html">feature of the day:<br>tiny things that make software feel alive</a></h2>
+          <p class="blog-card-excerpt">a tiny animation here, a smart default there, a shortcut you didn't know you needed. the little details that quietly earn your trust.</p>
+          <div class="blog-card-actions">
+            <button class="blog-like-button" type="button" data-post="feature" data-base="21" aria-label="Like feature post" aria-pressed="false"><span class="heart">♡</span><span class="like-count">21</span> likes</button>
+            <a class="blog-read-more" href="blog-feature.html">[ read post ]</a>
+          </div>
+        </div>
+        <div class="blog-media">
+          <a href="blog-feature.html" aria-label="Open software feature post"><img src="blog-assets/feature-card.svg" alt="Dark software interface card with a purple progress accent"></a>
+        </div>
+      </article>
+
+      <article class="blog-card medium-media">
+        <div class="blog-card-copy">
+          <p class="blog-date">[ 2026-08-30 ]</p>
+          <h2 class="blog-card-title"><a href="blog-game.html">what i played this week</a></h2>
+          <p class="blog-card-excerpt">a small strange world that feels like a secret diagram. every item becomes a verb. no handholding, just signals. perfect before bed.</p>
+          <div class="blog-card-actions">
+            <button class="blog-like-button" type="button" data-post="game" data-base="9" aria-label="Like game post" aria-pressed="false"><span class="heart">♡</span><span class="like-count">9</span> likes</button>
+            <a class="blog-read-more" href="blog-game.html">[ read post ]</a>
+          </div>
+        </div>
+        <div class="blog-media">
+          <a href="blog-game.html" aria-label="Open game post"><img src="blog-assets/game-card.svg" alt="Dark pixel-art inspired cavern scene"></a>
+        </div>
+      </article>
+
+      <article class="blog-card medium-media">
+        <div class="blog-card-copy">
+          <p class="blog-date">[ 2026-08-28 ]</p>
+          <h2 class="blog-card-title"><a href="blog-film.html">watched last night</a></h2>
+          <p class="blog-card-excerpt">a quiet film about looking, routine and the strange way repetition changes once you actually pay attention to it.</p>
+          <div class="blog-card-actions">
+            <button class="blog-like-button" type="button" data-post="film" data-base="12" aria-label="Like film post" aria-pressed="false"><span class="heart">♡</span><span class="like-count">12</span> likes</button>
+            <a class="blog-read-more" href="blog-film.html">[ read post ]</a>
+          </div>
+        </div>
+        <div class="blog-media">
+          <a href="blog-film.html" aria-label="Open film post"><img src="blog-assets/film-card.svg" alt="Muted sepia landscape with a long road disappearing into the horizon"></a>
+        </div>
       </article>
     </section>
 
-    <footer class="terminal-footer">
+    <p class="blog-more">↓ more posts below, eventually</p>
+
+    <footer class="terminal-footer blog-footer">
       <div class="footer-rule" aria-hidden="true"></div>
       <div class="footer-content">
-        <img class="footer-boat" src="boat.png?v=20260902-6" alt="Colorful sailing boat" width="54" height="54">
+        <img class="footer-boat" src="boat.png?v=20260902-7" alt="Colorful sailing boat" width="54" height="54">
         <div class="footer-copy">
           <p>2026 © dmitrii shchukin</p>
           <p class="muted">boatbehind.online</p>
