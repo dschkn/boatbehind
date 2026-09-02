@@ -177,7 +177,7 @@ h2 {
 
 .about-intro-heading {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 30px minmax(0, 1fr);
   gap: 20px;
   align-items: center;
   margin-bottom: 12px;
@@ -185,7 +185,7 @@ h2 {
 
 .about-mascot {
   display: block;
-  width: 34px;
+  width: 30px;
   height: auto;
   image-rendering: pixelated;
   pointer-events: none;
@@ -339,7 +339,7 @@ h2 {
   }
 
   .about-intro-heading {
-    grid-template-columns: 34px minmax(0, 1fr);
+    grid-template-columns: 30px minmax(0, 1fr);
     gap: 16px;
   }
 
