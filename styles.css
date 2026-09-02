@@ -169,22 +169,24 @@ h2 {
 
 .about-layout,
 .projects-layout {
-  position: relative;
   display: grid;
   grid-template-columns: 190px minmax(0, 1fr);
   gap: 56px;
   margin-top: 58px;
 }
 
+.about-intro-heading {
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 22px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
 .about-mascot {
-  position: absolute;
-  top: -9px;
-  left: 218px;
-  z-index: 1;
   display: block;
-  width: 68px;
+  width: 46px;
   height: auto;
-  transform: translateX(-50%);
   image-rendering: pixelated;
   pointer-events: none;
 }
@@ -336,11 +338,9 @@ h2 {
     margin-top: 42px;
   }
 
-  .about-mascot {
-    position: static;
-    width: 62px;
-    margin: -18px 0 -8px;
-    transform: none;
+  .about-intro-heading {
+    grid-template-columns: 46px minmax(0, 1fr);
+    gap: 18px;
   }
 
   .intro-panel,
