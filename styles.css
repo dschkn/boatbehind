@@ -177,15 +177,15 @@ h2 {
 
 .about-intro-heading {
   display: grid;
-  grid-template-columns: 46px minmax(0, 1fr);
-  gap: 22px;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 20px;
   align-items: center;
   margin-bottom: 12px;
 }
 
 .about-mascot {
   display: block;
-  width: 46px;
+  width: 34px;
   height: auto;
   image-rendering: pixelated;
   pointer-events: none;
@@ -339,8 +339,8 @@ h2 {
   }
 
   .about-intro-heading {
-    grid-template-columns: 46px minmax(0, 1fr);
-    gap: 18px;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 16px;
   }
 
   .intro-panel,
