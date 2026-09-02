@@ -125,6 +125,11 @@ h2 {
   max-width: 440px;
 }
 
+.intro-panel p + p,
+.about-intro p + p {
+  margin-top: 12px;
+}
+
 .empty-page {
   min-height: 260px;
 }
