@@ -176,19 +176,18 @@ h2 {
 }
 
 .about-intro-heading {
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
-  gap: 20px;
+  display: flex;
   align-items: center;
-  margin-bottom: 12px;
+  gap: 120px;
 }
 
 .about-mascot {
   display: block;
   width: 30px;
-  height: auto;
+  height: 20px;
+  flex: 0 0 auto;
   image-rendering: pixelated;
-  pointer-events: none;
+  image-rendering: crisp-edges;
 }
 
 .about-aside,
