@@ -6,6 +6,8 @@
   --muted-text: #85898e;
   --accent: #73aeca;
   --rule: #4a4d50;
+  --rsh-link: #e6b3c5;
+  --kreativ-link: #b7d7ae;
 }
 
 * {
@@ -155,7 +157,18 @@ h2 {
 }
 
 .footer-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   padding-top: 18px;
+}
+
+.footer-boat {
+  display: block;
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
 }
 
 .footer-copy p + p {
@@ -198,14 +211,48 @@ h2 {
   margin-top: 34px;
 }
 
-.about-list {
+.about-list,
+.work-list,
+.tech-list {
   margin: 10px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.about-list li + li {
+.about-list li + li,
+.tech-list li + li {
   margin-top: 5px;
+}
+
+.work-item + .work-item {
+  margin-top: 26px;
+}
+
+.work-heading {
+  line-height: 1.55;
+}
+
+.work-date {
+  font-weight: 700;
+}
+
+.work-place {
+  display: inline-block;
+  margin-top: 3px;
+}
+
+.work-place.rsh {
+  color: var(--rsh-link);
+}
+
+.work-place.kreativ {
+  color: var(--kreativ-link);
+}
+
+.work-description {
+  max-width: 580px;
+  margin-top: 5px;
+  color: var(--muted-text);
 }
 
 .project-list {
