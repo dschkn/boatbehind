@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="Dmitrii Shchukin">
-  <meta name="description" content="About Dmitrii Shchukin — software engineering experience, education and courses.">
+  <meta name="description" content="About Dmitrii Shchukin — software engineering experience, education, courses and technical stack.">
   <meta name="color-scheme" content="dark">
   <title>about — boatbehind.online</title>
-  <link rel="stylesheet" href="styles.css?v=20260822-1">
+  <link rel="stylesheet" href="styles.css?v=20260902-2">
 </head>
 <body class="site-body">
   <main class="terminal-shell about-shell" aria-label="About Dmitrii Shchukin">
@@ -39,10 +39,21 @@
 
         <section class="about-section" aria-labelledby="work-title">
           <h1 id="work-title" class="section-title">work experience</h1>
-          <ul class="about-list">
-            <li>2023–2024 research assistant, digital audio and electroacoustic systems<br>robert schumann hochschule düsseldorf (de)<br>development and operation of distributed networked audio systems with bidirectional realtime data exchange, remote control and coordinated processing across multiple computers.</li>
-            <li>2024 guest lecturer, electroacoustic, audiovisual technologies and audio software development<br>kreativInstitut ostwestfalen-lippe, detmold (de)<br>teaching electroacoustics, audiovisual technologies, networked audio systems and software development for acoustic applications.</li>
-            <li>2023–2025 freelance qa engineer / software developer<br>test automation and development of software tooling for technical and audio-oriented applications, including multichannel and networked systems. worked with javascript, typescript and python on automated testing, application logic, data exchange and reliability of software-driven workflows.</li>
+          <ul class="work-list">
+            <li class="work-item">
+              <p class="work-heading"><strong class="work-date">2023–2024</strong> research assistant, digital audio and electroacoustic systems</p>
+              <a class="work-place rsh" href="https://www.rsh-duesseldorf.de/" target="_blank" rel="noreferrer">robert schumann hochschule düsseldorf (de)</a>
+              <p class="work-description">development and operation of distributed networked audio systems with bidirectional realtime data exchange, remote control and coordinated processing across multiple computers.</p>
+            </li>
+            <li class="work-item">
+              <p class="work-heading"><strong class="work-date">2024</strong> guest lecturer, electroacoustic, audiovisual technologies and audio software development</p>
+              <a class="work-place kreativ" href="https://kreativ.institute/de" target="_blank" rel="noreferrer">kreativInstitut ostwestfalen-lippe, detmold (de)</a>
+              <p class="work-description">teaching electroacoustics, audiovisual technologies, networked audio systems and software development for acoustic applications.</p>
+            </li>
+            <li class="work-item">
+              <p class="work-heading"><strong class="work-date">2023–2025</strong> freelance qa engineer / software developer</p>
+              <p class="work-description">test automation and development of software tooling for technical and audio-oriented applications, including multichannel and networked systems. worked with javascript, typescript and python on automated testing, application logic, data exchange and reliability of software-driven workflows.</p>
+            </li>
           </ul>
         </section>
 
@@ -58,6 +69,19 @@
           <ul class="about-list">
             <li>2024 webdriverio + node.js - javascript ui automation from scratch</li>
             <li>2027 java developer, yandex practicum</li>
+          </ul>
+        </section>
+
+        <section class="about-section" aria-labelledby="stack-title">
+          <h2 id="stack-title" class="section-title">tech stack</h2>
+          <ul class="tech-list">
+            <li>backend: java / spring boot / rest apis / junit 5 / maven / gradle</li>
+            <li>web: javascript / typescript / node.js / react / vite / html / css / pwa</li>
+            <li>data: postgresql / supabase</li>
+            <li>qa: webdriverio / page object model / postman / e2e / ui / functional testing / selenoid</li>
+            <li>infrastructure: linux / ubuntu / bash / docker / docker compose / caddy / reverse proxy / tls / ssh / dns</li>
+            <li>delivery: git / github / github actions / ci/cd</li>
+            <li>other: python</li>
           </ul>
         </section>
       </div>
