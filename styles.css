@@ -125,8 +125,7 @@ h2 {
   max-width: 440px;
 }
 
-.intro-panel p + p,
-.about-intro p + p {
+.intro-panel p + p {
   margin-top: 12px;
 }
 
@@ -175,21 +174,6 @@ h2 {
   margin-top: 58px;
 }
 
-.about-intro-heading {
-  display: flex;
-  align-items: center;
-  gap: 120px;
-}
-
-.about-mascot {
-  display: block;
-  width: 30px;
-  height: 20px;
-  flex: 0 0 auto;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-}
-
 .about-aside,
 .projects-aside {
   display: flex;
@@ -206,6 +190,27 @@ h2 {
 .projects-intro {
   max-width: 540px;
   margin-bottom: 42px;
+}
+
+.about-intro-heading {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 120px;
+  margin-bottom: 12px;
+}
+
+.about-mascot {
+  display: block;
+  width: 30px;
+  height: 20px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.about-intro p + p {
+  margin-top: 12px;
 }
 
 .about-section + .about-section {
@@ -303,8 +308,8 @@ h2 {
   }
 
   .terminal-shell::before {
-    margin-left: -20px;
     margin-right: -20px;
+    margin-left: -20px;
   }
 
   .terminal-header {
@@ -338,8 +343,7 @@ h2 {
   }
 
   .about-intro-heading {
-    grid-template-columns: 30px minmax(0, 1fr);
-    gap: 16px;
+    column-gap: 16px;
   }
 
   .intro-panel,
