@@ -96,29 +96,10 @@ h2 {
   gap: 7px;
 }
 
-.terminal-nav,
-.language-switcher {
-  display: flex;
-  white-space: nowrap;
-}
-
 .terminal-nav {
+  display: flex;
   gap: 20px;
-}
-
-.language-switcher {
-  gap: 5px;
-  font: inherit;
-  color: var(--muted-text);
-}
-
-.language-switcher a {
-  color: var(--muted-text);
-}
-
-.language-switcher a.active {
-  color: var(--page-text);
-  text-decoration: none;
+  white-space: nowrap;
 }
 
 .home-grid {
