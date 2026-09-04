@@ -8,7 +8,6 @@
   --rule: #4a4d50;
   --rsh-link: #ec008c;
   --kreativ-link: #7cff00;
-  --blog-accent: #a58ad4;
   --blog-card-background: #242528;
 }
 
@@ -105,7 +104,7 @@ h2 {
 }
 
 .terminal-nav a[aria-current="page"] {
-  color: var(--blog-accent);
+  color: var(--accent);
 }
 
 .home-grid {
@@ -336,13 +335,14 @@ h2 {
   color: var(--page-text);
   background: var(--blog-card-background);
   border: 1px solid var(--rule);
+  border-radius: 9px;
   transition: border-color 120ms ease, background 120ms ease;
 }
 
 .blog-card:hover {
   text-decoration: none;
   background: #27282b;
-  border-color: var(--blog-accent);
+  border-color: var(--accent);
 }
 
 .blog-card-image {
@@ -366,7 +366,7 @@ h2 {
 }
 
 .blog-date {
-  color: var(--blog-accent);
+  color: var(--accent);
   font-size: 12px;
 }
 
@@ -384,7 +384,7 @@ h2 {
 .blog-open {
   margin-top: auto;
   padding-top: 24px;
-  color: var(--blog-accent);
+  color: var(--accent);
 }
 
 .blog-card:hover .blog-open {
@@ -414,7 +414,7 @@ h2 {
 
 .blog-source a,
 .blog-article a {
-  color: var(--blog-accent);
+  color: var(--accent);
 }
 
 .blog-article > p,
@@ -537,6 +537,7 @@ h2 {
 
   .blog-card {
     grid-template-columns: 1fr;
+    border-radius: 8px;
   }
 
   .blog-card-image {
