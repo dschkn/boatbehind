@@ -8,10 +8,10 @@
   <meta name="color-scheme" content="dark">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <title>blog — boatbehind.online</title>
-  <link rel="stylesheet" href="styles.css?v=20260902-8">
+  <link rel="stylesheet" href="styles.css?v=20260904-1">
 </head>
 <body class="site-body">
-  <main class="terminal-shell home-shell" aria-label="Blog by Dmitrii Shchukin">
+  <main class="terminal-shell blog-shell" aria-label="Blog by Dmitrii Shchukin">
     <header class="terminal-header">
       <a class="terminal-brand" href="index.html">&lt; back<span class="cursor">_</span></a>
       <div class="header-controls">
@@ -20,23 +20,33 @@
           <a href="projects.html">projects</a>
           <a href="texts.html">texts</a>
           <a href="https://github.com/dschkn" target="_blank" rel="noreferrer">github</a>
-          <a href="blog.html">blog</a>
+          <a href="blog.html" aria-current="page">blog</a>
         </nav>
       </div>
     </header>
 
-    <section class="home-grid">
-      <div class="identity-panel">
+    <section class="blog-layout">
+      <aside class="blog-aside">
         <p class="section-title">blog</p>
-        <p class="muted">notes / logs / unfinished thoughts</p>
-      </div>
+        <p class="muted">notes / logs / references</p>
+      </aside>
 
-      <article class="intro-panel">
-        <p>coming soon.</p>
-      </article>
+      <div class="blog-list">
+        <a class="blog-card" href="blog/stankowski.html">
+          <div class="blog-card-image">
+            <img src="https://habrastorage.org/r/w1560/getpro/habr/upload_files/617/25a/409/61725a409631ede025619e4e95fc86b9.png" alt="Антон Станковский и его графические работы">
+          </div>
+          <div class="blog-card-copy">
+            <p class="blog-date">[ 2026-09-04 ]</p>
+            <h2>Квадрат и косые линии: логотипы Антона Станковского</h2>
+            <p class="muted">retrospective / graphic design / anton stankowski</p>
+            <span class="blog-open">open post →</span>
+          </div>
+        </a>
+      </div>
     </section>
 
-    <footer class="terminal-footer">
+    <footer class="terminal-footer blog-footer">
       <div class="footer-rule" aria-hidden="true"></div>
       <div class="footer-content">
         <img class="footer-boat" src="boat.png?v=20260902-8" alt="Colorful sailing boat" width="54" height="54">
