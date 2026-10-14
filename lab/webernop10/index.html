@@ -7,7 +7,7 @@ body{margin:0;padding:28px}main{max-width:1120px;margin:0 auto}a{color:inherit}h
 p{line-height:1.7}.muted{color:#929896}.controls{display:flex;flex-wrap:wrap;gap:14px;margin:34px 0}label{display:flex;flex-direction:column;gap:7px;color:#9da3a0;font-size:12px}
 select,input,button{background:#22282a;color:#f1f1ec;border:1px solid #535b5b;font:inherit;padding:10px 12px;border-radius:2px}
 button{cursor:pointer}button:hover{background:#394042}.accent{border-color:#b26c62;color:#ebada3}input{width:115px}select{max-width:270px}
-#score{width:100%;height:320px;background:#e9e7df;border:1px solid #747673;display:block}
+.score-scroll{overflow-x:auto;border:1px solid #747673;background:#f4f1e9;max-width:100%}#score{width:2100px;height:1060px;display:block} .score-note{font-size:12px;color:#b6b9b5;margin:8px 0 0}
 .legend{display:flex;justify-content:space-between;flex-wrap:wrap;margin:12px 0 28px;color:#9fa6a4;font-size:12px;gap:12px}
 #events{width:100%;border-collapse:collapse;font-size:12px;margin:15px 0 30px}td,th{text-align:left;padding:9px;border-bottom:1px solid #363b3e}th{color:#a7b0ad}
 footer{border-top:1px solid #343b3b;margin-top:30px;padding-top:22px;color:#9b9e9a;font-size:12px}
@@ -25,7 +25,7 @@ footer{border-top:1px solid #343b3b;margin-top:30px;padding-top:22px;color:#9b9e
 <label>&nbsp;<button id="play">▶ PLAY</button></label>
 <label>&nbsp;<button id="stop">■ STOP</button></label>
 </div>
-<canvas id="score" aria-label="Generated pitch and time diagram"></canvas>
+<h3>GENERATED SCORE / 10 INSTRUMENTS</h3><div class="score-scroll" id="scoreScroll"><canvas id="score" width="2100" height="1060" aria-label="Ten-staff pitch and time notation of generated Webern-inspired material"></canvas></div><p class="score-note">Proportional score preview · staff notes and accidentals · horizontally scrollable. Not a fully quantized bach.score engraving.</p>
 <div class="legend"><span id="status">Loading original generator…</span><span id="row"></span></div>
 <h3>EVENTS / PREVIEW</h3><table id="events"><thead><tr><th>#</th><th>Instrument</th><th>Start</th><th>Pitch</th><th>Duration</th></tr></thead><tbody></tbody></table>
 <footer>Research instrument · <a href="https://github.com/dschkn/computational_modeling_of_weberns_op10" target="_blank" rel="noopener">Original project / source</a><br>Reference sine-wave playback only. No complete orchestration timbres or MusicXML export yet.</footer>
@@ -39,7 +39,60 @@ const names=['Flute','Clarinet','Trumpet','Trombone','Celesta','Harp','Glockensp
 let notes=[],ac=null,voices=[],timer=null,begin=0,playing=false; const palette=['#446b80','#987454','#a85e54','#7b7796','#718c67','#b48f46','#729394','#a27186','#7787a6','#5a686b'];
 function stop(){if(timer)cancelAnimationFrame(timer);timer=null;voices.forEach(n=>{try{n.osc.stop()}catch(e){}});voices=[];playing=false;$('play').textContent='▶ PLAY';draw();}
 function generateWeb(){stop();try{seed(Number($('seed').value)||1913);profile(Number($('profile').value));eventcount(Number($('count').value));tempo(Number($('tempo').value));generate();notes=generatedEvents.slice().sort((a,b)=>a.onsetMs-b.onsetMs);$('row').textContent='ROW: '+currentRow.map(n=>PITCH_NAMES[n]).join(' · ');$('status').textContent=notes.length+' events / '+names.length+' instrumental voices / generated with original algorithm';const tbody=$('events').querySelector('tbody');tbody.innerHTML='';notes.slice(0,24).forEach((n,i)=>{let tr=document.createElement('tr');[i+1,names[n.voice-1],(n.onsetMs/1000).toFixed(2)+' s',(n.pitchCents/100).toFixed(1)+' st',(n.durationMs/1000).toFixed(2)+' s'].forEach(x=>{let td=document.createElement('td');td.textContent=x;tr.appendChild(td)});tbody.appendChild(tr)});draw()}catch(e){$('status').textContent='Generator error: '+e.message;console.error(e)}}
-function draw(){let w=canvas.clientWidth,h=canvas.clientHeight,dpr=window.devicePixelRatio||1;canvas.width=w*dpr;canvas.height=h*dpr;ctx.scale(dpr,dpr);ctx.fillStyle='#e9e7df';ctx.fillRect(0,0,w,h);const pad=32,tw=w-2*pad,th=h-2*pad,end=Math.max(1,...notes.map(n=>n.onsetMs+n.durationMs)),minPitch=3600,maxPitch=9900;ctx.lineWidth=0.6;for(let i=0;i<10;i++){let y=pad+(i/9)*th;ctx.strokeStyle='#b8b8b1';ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke()}notes.forEach(n=>{let x=pad+n.onsetMs/end*tw,y=pad+(1-(n.pitchCents-minPitch)/(maxPitch-minPitch))*th,width=Math.max(2,n.durationMs/end*tw);ctx.fillStyle=palette[n.voice-1]||'#535353';ctx.fillRect(x,Math.max(pad,Math.min(h-pad,y)),width,5)});if(playing){let elapsed=(ac.currentTime-begin)*1000,x=pad+elapsed/end*tw;ctx.strokeStyle='#c65347';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,pad);ctx.lineTo(x,h-pad);ctx.stroke()}}
+function draw(){
+const w=2100,h=1060,dpr=Math.min(2,window.devicePixelRatio||1);
+if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
+ctx.setTransform(dpr,0,0,dpr,0,0);
+ctx.fillStyle='#f4f1e9';ctx.fillRect(0,0,w,h);
+const left=154,right=w-40,staffTop=74,gap=96,lineGap=10,staffHeight=40;
+const end=Math.max(1,...notes.map(n=>n.onsetMs+n.durationMs));
+const area=right-left;
+ctx.font='11px ui-monospace,monospace';ctx.textAlign='left';ctx.lineWidth=.7;
+const refs=[64,64,64,43,64,43,64,64,53,43]; // bottom staff line: treble E4, bass G2, alto F3
+const clefs=['G','G','G','F','G','F','G','G','C','F'];
+const flats={3:true,8:true,10:true};
+const namesNatural=['C','C','D','E','E','F','F','G','A','A','B','B'];
+const accidental={1:'♯',3:'♭',6:'♯',8:'♭',10:'♭'};
+const noteLetter={C:0,D:1,E:2,F:3,G:4,A:5,B:6};
+function degree(midi){
+ const pc=((midi%12)+12)%12,oct=Math.floor(midi/12)-1;
+ return oct*7+noteLetter[namesNatural[pc]];
+}
+function xFor(ms){return left+Math.max(0,ms/end)*area}
+const totalSeconds=end/1000;
+ctx.fillStyle='#a2a29b';
+for(let second=0;second<=totalSeconds;second+=5){
+ const x=xFor(second*1000);ctx.strokeStyle='#ddd9d0';ctx.beginPath();ctx.moveTo(x,39);ctx.lineTo(x,staffTop+gap*9+staffHeight+18);ctx.stroke();
+ ctx.fillStyle='#686c6b';ctx.fillText(second+'s',x+3,24);
+}
+for(let v=0;v<10;v++){
+ const top=staffTop+v*gap,bottom=top+staffHeight;
+ ctx.fillStyle='#303538';ctx.font='12px ui-monospace,monospace';ctx.fillText(names[v],12,top+22);
+ ctx.font='bold 17px Georgia,serif';ctx.fillText(clefs[v],left-23,top+27);
+ ctx.strokeStyle='#898b85';ctx.lineWidth=.75;
+ for(let l=0;l<5;l++){const y=top+l*lineGap;ctx.beginPath();ctx.moveTo(left-34,y);ctx.lineTo(right,y);ctx.stroke()}
+ ctx.fillStyle='#a9aba5';ctx.font='10px ui-monospace,monospace';ctx.fillText(String(v+1).padStart(2,'0'),left-66,top+23);
+ const voiceNotes=notes.filter(n=>n.voice===v+1);
+ for(const n of voiceNotes){
+  const midi=Math.round(n.pitchCents/100);
+  const steps=degree(midi)-degree(refs[v]);
+  const y=bottom-steps*5;
+  const x=xFor(n.onsetMs);
+  ctx.strokeStyle='#4f5454';ctx.lineWidth=1;
+  // ledger lines above and below staff
+  if(steps<0){for(let s=-2;s>=steps;s-=2){let ly=bottom-s*5;ctx.beginPath();ctx.moveTo(x-10,ly);ctx.lineTo(x+11,ly);ctx.stroke()}}
+  if(steps>8){for(let s=10;s<=steps;s+=2){let ly=bottom-s*5;ctx.beginPath();ctx.moveTo(x-10,ly);ctx.lineTo(x+11,ly);ctx.stroke()}}
+  ctx.save();ctx.translate(x,y);ctx.rotate(-.27);ctx.fillStyle=palette[v];ctx.beginPath();ctx.ellipse(0,0,6.2,4.5,0,0,Math.PI*2);ctx.fill();ctx.restore();
+  // proportional stem plus duration indication
+  ctx.strokeStyle=palette[v];ctx.lineWidth=1.15;ctx.beginPath();const down=steps>4;
+  ctx.moveTo(x+(down?-5:5),y);ctx.lineTo(x+(down?-5:5),y+(down?29:-29));ctx.stroke();
+  const durWidth=Math.max(2,Math.min(45,n.durationMs/end*area));
+  ctx.strokeStyle='#9b9e99';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(x+8,y+9);ctx.lineTo(x+8+durWidth,y+9);ctx.stroke();
+  const pc=((midi%12)+12)%12;if(accidental[pc]){ctx.font='15px Georgia,serif';ctx.fillStyle='#353a3b';ctx.fillText(accidental[pc],x-17,y+4)}
+ }
+}
+if(playing&&ac){const elapsed=Math.max(0,(ac.currentTime-begin)*1000),x=xFor(elapsed);ctx.strokeStyle='#b6483f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,35);ctx.lineTo(x,staffTop+gap*9+staffHeight+10);ctx.stroke()}
+}
 function play(){if(!notes.length)return;stop();ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();begin=ac.currentTime+.1;playing=true;$('play').textContent='▶ RESTART';const master=ac.createGain();master.gain.value=.3;master.connect(ac.destination);const end=Math.max(...notes.map(n=>n.onsetMs+n.durationMs));notes.forEach(n=>{let time=begin+n.onsetMs/1000,dur=Math.max(.025,n.durationMs/1000),freq=440*Math.pow(2,(n.pitchCents/100-69)/12);if(freq>12000||freq<20)return;let osc=ac.createOscillator(),gain=ac.createGain(),pan=ac.createStereoPanner();osc.type='sine';osc.frequency.value=freq;pan.pan.value=((n.voice-1)/9)*1.4-.7;let level=Math.min(.065,.012+.035*(n.velocity||60)/127);gain.gain.setValueAtTime(0,time);gain.gain.linearRampToValueAtTime(level,time+Math.min(.02,dur*.25));gain.gain.setValueAtTime(level,time+Math.max(.02,dur-.025));gain.gain.linearRampToValueAtTime(0,time+dur);osc.connect(gain).connect(pan).connect(master);osc.start(time);osc.stop(time+dur+.02);voices.push({osc})});function tick(){if(!playing)return;if((ac.currentTime-begin)*1000>end+100){playing=false;$('play').textContent='▶ PLAY';draw();return}draw();timer=requestAnimationFrame(tick)}tick()}
 $('generate').addEventListener('click',generateWeb);$('play').addEventListener('click',play);$('stop').addEventListener('click',stop);window.addEventListener('resize',draw);$('profile').addEventListener('change',()=>{let tempos=[60,50,100,40,60,152];$('tempo').value=tempos[Number($('profile').value)];generateWeb()});generateWeb();
 })();
