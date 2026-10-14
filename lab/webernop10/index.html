@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Webern op.10 — boatbehind LAB</title>
+<style>
+:root{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:#e8e8e2;background:#111315}*{box-sizing:border-box}
+body{margin:0;padding:28px}main{max-width:1120px;margin:0 auto}a{color:inherit}header{display:flex;justify-content:space-between;color:#8f9595;font-size:12px;border-bottom:1px solid #414747;padding-bottom:18px;gap:10px}h1{font-size:clamp(38px,7vw,75px);font-weight:400;letter-spacing:-.07em;margin:42px 0 4px}h1 span{color:#bf6a65} .sub{color:#afb1ac;font-size:12px;letter-spacing:.09em}
+p{line-height:1.7}.muted{color:#929896}.controls{display:flex;flex-wrap:wrap;gap:14px;margin:34px 0}label{display:flex;flex-direction:column;gap:7px;color:#9da3a0;font-size:12px}
+select,input,button{background:#22282a;color:#f1f1ec;border:1px solid #535b5b;font:inherit;padding:10px 12px;border-radius:2px}
+button{cursor:pointer}button:hover{background:#394042}.accent{border-color:#b26c62;color:#ebada3}input{width:115px}select{max-width:270px}
+#score{width:100%;height:320px;background:#e9e7df;border:1px solid #747673;display:block}
+.legend{display:flex;justify-content:space-between;flex-wrap:wrap;margin:12px 0 28px;color:#9fa6a4;font-size:12px;gap:12px}
+#events{width:100%;border-collapse:collapse;font-size:12px;margin:15px 0 30px}td,th{text-align:left;padding:9px;border-bottom:1px solid #363b3e}th{color:#a7b0ad}
+footer{border-top:1px solid #343b3b;margin-top:30px;padding-top:22px;color:#9b9e9a;font-size:12px}
+</style></head><body><main>
+<header><span>BOATBEHIND / LAB / 002</span><a href="/">← boatbehind.online</a></header>
+<h1>WEBERN <span>op.10</span></h1>
+<p class="sub">COMPUTATIONAL MODELING OF FIVE PIECES FOR ORCHESTRA</p>
+<p class="muted">An experimental browser adaptation of Dmitrii Shchukin's Max/MSP + bach composition instrument.<br>Uses the original JavaScript generation algorithm; simplified Web Audio audition, not the complete Max score renderer.</p>
+<div class="controls">
+<label>PROFILE<select id="profile"><option value="0">Synthesis</option><option value="1">I · Sehr ruhig und zart</option><option value="2">II · Lebhaft und zart bewegt</option><option value="3">III · Sehr langsam und äußerst ruhig</option><option value="4">IV · Fließend, äußerst zart</option><option value="5">V · Sehr fließend</option></select></label>
+<label>SEED<input id="seed" type="number" value="1913" min="1"></label>
+<label>EVENTS<input id="count" type="number" value="70" min="12" max="240"></label>
+<label>TEMPO<input id="tempo" type="number" value="60" min="24" max="180"></label>
+<label>&nbsp;<button id="generate" class="accent">↻ GENERATE</button></label>
+<label>&nbsp;<button id="play">▶ PLAY</button></label>
+<label>&nbsp;<button id="stop">■ STOP</button></label>
+</div>
+<canvas id="score" aria-label="Generated pitch and time diagram"></canvas>
+<div class="legend"><span id="status">Loading original generator…</span><span id="row"></span></div>
+<h3>EVENTS / PREVIEW</h3><table id="events"><thead><tr><th>#</th><th>Instrument</th><th>Start</th><th>Pitch</th><th>Duration</th></tr></thead><tbody></tbody></table>
+<footer>Research instrument · <a href="https://github.com/dschkn/computational_modeling_of_weberns_op10" target="_blank" rel="noopener">Original project / source</a><br>Reference sine-wave playback only. No complete orchestration timbres or MusicXML export yet.</footer>
+</main>
+<script>window.outlet=function(){};window.post=function(){};window.arrayfromargs=function(args){return Array.prototype.slice.call(args)};</script>
+<script src="./webernPersonaEngine.js"></script>
+<script>
+(function(){
+const $=id=>document.getElementById(id), canvas=$('score'),ctx=canvas.getContext('2d');
+const names=['Flute','Clarinet','Trumpet','Trombone','Celesta','Harp','Glockenspiel','Violin','Viola','Violoncello'];
+let notes=[],ac=null,voices=[],timer=null,begin=0,playing=false; const palette=['#446b80','#987454','#a85e54','#7b7796','#718c67','#b48f46','#729394','#a27186','#7787a6','#5a686b'];
+function stop(){if(timer)cancelAnimationFrame(timer);timer=null;voices.forEach(n=>{try{n.osc.stop()}catch(e){}});voices=[];playing=false;$('play').textContent='▶ PLAY';draw();}
+function generateWeb(){stop();try{seed(Number($('seed').value)||1913);profile(Number($('profile').value));eventcount(Number($('count').value));tempo(Number($('tempo').value));generate();notes=generatedEvents.slice().sort((a,b)=>a.onsetMs-b.onsetMs);$('row').textContent='ROW: '+currentRow.map(n=>PITCH_NAMES[n]).join(' · ');$('status').textContent=notes.length+' events / '+names.length+' instrumental voices / generated with original algorithm';const tbody=$('events').querySelector('tbody');tbody.innerHTML='';notes.slice(0,24).forEach((n,i)=>{let tr=document.createElement('tr');[i+1,names[n.voice-1],(n.onsetMs/1000).toFixed(2)+' s',(n.pitchCents/100).toFixed(1)+' st',(n.durationMs/1000).toFixed(2)+' s'].forEach(x=>{let td=document.createElement('td');td.textContent=x;tr.appendChild(td)});tbody.appendChild(tr)});draw()}catch(e){$('status').textContent='Generator error: '+e.message;console.error(e)}}
+function draw(){let w=canvas.clientWidth,h=canvas.clientHeight,dpr=window.devicePixelRatio||1;canvas.width=w*dpr;canvas.height=h*dpr;ctx.scale(dpr,dpr);ctx.fillStyle='#e9e7df';ctx.fillRect(0,0,w,h);const pad=32,tw=w-2*pad,th=h-2*pad,end=Math.max(1,...notes.map(n=>n.onsetMs+n.durationMs)),minPitch=3600,maxPitch=9900;ctx.lineWidth=0.6;for(let i=0;i<10;i++){let y=pad+(i/9)*th;ctx.strokeStyle='#b8b8b1';ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(w-pad,y);ctx.stroke()}notes.forEach(n=>{let x=pad+n.onsetMs/end*tw,y=pad+(1-(n.pitchCents-minPitch)/(maxPitch-minPitch))*th,width=Math.max(2,n.durationMs/end*tw);ctx.fillStyle=palette[n.voice-1]||'#535353';ctx.fillRect(x,Math.max(pad,Math.min(h-pad,y)),width,5)});if(playing){let elapsed=(ac.currentTime-begin)*1000,x=pad+elapsed/end*tw;ctx.strokeStyle='#c65347';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,pad);ctx.lineTo(x,h-pad);ctx.stroke()}}
+function play(){if(!notes.length)return;stop();ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();begin=ac.currentTime+.1;playing=true;$('play').textContent='▶ RESTART';const master=ac.createGain();master.gain.value=.3;master.connect(ac.destination);const end=Math.max(...notes.map(n=>n.onsetMs+n.durationMs));notes.forEach(n=>{let time=begin+n.onsetMs/1000,dur=Math.max(.025,n.durationMs/1000),freq=440*Math.pow(2,(n.pitchCents/100-69)/12);if(freq>12000||freq<20)return;let osc=ac.createOscillator(),gain=ac.createGain(),pan=ac.createStereoPanner();osc.type='sine';osc.frequency.value=freq;pan.pan.value=((n.voice-1)/9)*1.4-.7;let level=Math.min(.065,.012+.035*(n.velocity||60)/127);gain.gain.setValueAtTime(0,time);gain.gain.linearRampToValueAtTime(level,time+Math.min(.02,dur*.25));gain.gain.setValueAtTime(level,time+Math.max(.02,dur-.025));gain.gain.linearRampToValueAtTime(0,time+dur);osc.connect(gain).connect(pan).connect(master);osc.start(time);osc.stop(time+dur+.02);voices.push({osc})});function tick(){if(!playing)return;if((ac.currentTime-begin)*1000>end+100){playing=false;$('play').textContent='▶ PLAY';draw();return}draw();timer=requestAnimationFrame(tick)}tick()}
+$('generate').addEventListener('click',generateWeb);$('play').addEventListener('click',play);$('stop').addEventListener('click',stop);window.addEventListener('resize',draw);$('profile').addEventListener('change',()=>{let tempos=[60,50,100,40,60,152];$('tempo').value=tempos[Number($('profile').value)];generateWeb()});generateWeb();
+})();
+</script></body></html>
