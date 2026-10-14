@@ -7,7 +7,7 @@ body{margin:0;padding:28px}main{max-width:1120px;margin:0 auto}a{color:inherit}h
 p{line-height:1.7}.muted{color:#929896}.controls{display:flex;flex-wrap:wrap;gap:14px;margin:34px 0}label{display:flex;flex-direction:column;gap:7px;color:#9da3a0;font-size:12px}
 select,input,button{background:#22282a;color:#f1f1ec;border:1px solid #535b5b;font:inherit;padding:10px 12px;border-radius:2px}
 button{cursor:pointer}button:hover{background:#394042}.accent{border-color:#b26c62;color:#ebada3}input{width:115px}select{max-width:270px}
-.score-scroll{overflow-x:auto;border:1px solid #747673;background:#f4f1e9;max-width:100%}#score{width:2100px;height:1060px;display:block} .score-note{font-size:12px;color:#b6b9b5;margin:8px 0 0}
+.score-scroll{overflow:auto;max-height:82vh;border:1px solid #747673;background:#f4f1e9;max-width:100%}#score{width:2100px;height:1060px;display:block} .score-note{font-size:12px;color:#b6b9b5;margin:8px 0 0}
 .legend{display:flex;justify-content:space-between;flex-wrap:wrap;margin:12px 0 28px;color:#9fa6a4;font-size:12px;gap:12px}
 #events{width:100%;border-collapse:collapse;font-size:12px;margin:15px 0 30px}td,th{text-align:left;padding:9px;border-bottom:1px solid #363b3e}th{color:#a7b0ad}
 footer{border-top:1px solid #343b3b;margin-top:30px;padding-top:22px;color:#9b9e9a;font-size:12px}
@@ -25,20 +25,34 @@ footer{border-top:1px solid #343b3b;margin-top:30px;padding-top:22px;color:#9b9e
 <label>&nbsp;<button id="play">▶ PLAY</button></label>
 <label>&nbsp;<button id="stop">■ STOP</button></label>
 </div>
-<h3>GENERATED SCORE / 10 INSTRUMENTS</h3><div class="score-scroll" id="scoreScroll"><canvas id="score" width="2100" height="1060" aria-label="Ten-staff pitch and time notation of generated Webern-inspired material"></canvas></div><p class="score-note">Proportional score preview · staff notes and accidentals · horizontally scrollable. Not a fully quantized bach.score engraving.</p>
+<h3>GENERATED SCORE / 10 INSTRUMENTS</h3><div class="controls"><label>NOTATION <select id="notationMode"><option value="engraved">Engraved score (Verovio)</option><option value="timeline">Proportional timeline</option></select></label><label>PAGE <select id="pageSelect"><option value="1">1</option></select></label><label>&nbsp;<button id="exportXML">↓ MUSICXML</button></label></div><div id="engraved" class="score-scroll" style="color:#171717;background:#fff;padding:12px;min-height:300px">Preparing score…</div><div class="score-scroll" id="scoreScroll" style="display:none"><canvas id="score" width="2100" height="1060" aria-label="Ten-staff pitch and time notation of generated Webern-inspired material"></canvas></div><p class="score-note">Notation uses a 1/16-beat MusicXML quantization approximation. Full Max/bach phrase details and multi-voice polyphony are not yet ported.</p>
 <div class="legend"><span id="status">Loading original generator…</span><span id="row"></span></div>
 <h3>EVENTS / PREVIEW</h3><table id="events"><thead><tr><th>#</th><th>Instrument</th><th>Start</th><th>Pitch</th><th>Duration</th></tr></thead><tbody></tbody></table>
 <footer>Research instrument · <a href="https://github.com/dschkn/computational_modeling_of_weberns_op10" target="_blank" rel="noopener">Original project / source</a><br>Reference sine-wave playback only. No complete orchestration timbres or MusicXML export yet.</footer>
 </main>
 <script>window.outlet=function(){};window.post=function(){};window.arrayfromargs=function(args){return Array.prototype.slice.call(args)};</script>
-<script src="./webernPersonaEngine.js"></script>
+<script src="./webernPersonaEngine.js"></script><script src="./musicxml.js"></script><script src="https://www.verovio.org/javascript/latest/verovio-toolkit-wasm.js" defer></script>
 <script>
 (function(){
 const $=id=>document.getElementById(id), canvas=$('score'),ctx=canvas.getContext('2d');
 const names=['Flute','Clarinet','Trumpet','Trombone','Celesta','Harp','Glockenspiel','Violin','Viola','Violoncello'];
-let notes=[],ac=null,voices=[],timer=null,begin=0,playing=false; const palette=['#446b80','#987454','#a85e54','#7b7796','#718c67','#b48f46','#729394','#a27186','#7787a6','#5a686b'];
+let toolkit=null,xmlString='',notes=[],ac=null,voices=[],timer=null,begin=0,playing=false; const palette=['#446b80','#987454','#a85e54','#7b7796','#718c67','#b48f46','#729394','#a27186','#7787a6','#5a686b'];
 function stop(){if(timer)cancelAnimationFrame(timer);timer=null;voices.forEach(n=>{try{n.osc.stop()}catch(e){}});voices=[];playing=false;$('play').textContent='▶ PLAY';draw();}
-function generateWeb(){stop();try{seed(Number($('seed').value)||1913);profile(Number($('profile').value));eventcount(Number($('count').value));tempo(Number($('tempo').value));generate();notes=generatedEvents.slice().sort((a,b)=>a.onsetMs-b.onsetMs);$('row').textContent='ROW: '+currentRow.map(n=>PITCH_NAMES[n]).join(' · ');$('status').textContent=notes.length+' events / '+names.length+' instrumental voices / generated with original algorithm';const tbody=$('events').querySelector('tbody');tbody.innerHTML='';notes.slice(0,24).forEach((n,i)=>{let tr=document.createElement('tr');[i+1,names[n.voice-1],(n.onsetMs/1000).toFixed(2)+' s',(n.pitchCents/100).toFixed(1)+' st',(n.durationMs/1000).toFixed(2)+' s'].forEach(x=>{let td=document.createElement('td');td.textContent=x;tr.appendChild(td)});tbody.appendChild(tr)});draw()}catch(e){$('status').textContent='Generator error: '+e.message;console.error(e)}}
+function generateWeb(){stop();try{seed(Number($('seed').value)||1913);profile(Number($('profile').value));eventcount(Number($('count').value));tempo(Number($('tempo').value));generate();notes=generatedEvents.slice().sort((a,b)=>a.onsetMs-b.onsetMs);$('row').textContent='ROW: '+currentRow.map(n=>PITCH_NAMES[n]).join(' · ');$('status').textContent=notes.length+' events / '+names.length+' instrumental voices / generated with original algorithm';const tbody=$('events').querySelector('tbody');tbody.innerHTML='';notes.slice(0,24).forEach((n,i)=>{let tr=document.createElement('tr');[i+1,names[n.voice-1],(n.onsetMs/1000).toFixed(2)+' s',(n.pitchCents/100).toFixed(1)+' st',(n.durationMs/1000).toFixed(2)+' s'].forEach(x=>{let td=document.createElement('td');td.textContent=x;tr.appendChild(td)});tbody.appendChild(tr)});renderScore()}catch(e){$('status').textContent='Generator error: '+e.message;console.error(e)}}
+function renderScore(){
+ try{
+ xmlString=window.webernMusicXML(notes,Number($('tempo').value)||60);
+ if(!toolkit){$('engraved').textContent='Verovio is loading. Timeline remains available.';draw();return}
+ toolkit.setOptions({inputFrom:'musicxml',pageWidth:2450,pageHeight:3400,scale:37,adjustPageHeight:true,breaks:'auto',header:'none',footer:'none'});
+ toolkit.loadData(xmlString);
+ const pages=toolkit.getPageCount();
+ $('pageSelect').innerHTML='';for(let i=1;i<=pages;i++){const o=document.createElement('option');o.value=String(i);o.textContent=String(i)+' / '+pages;$('pageSelect').appendChild(o)}
+ showPage();
+ }catch(e){$('engraved').textContent='Score layout failed: '+e.message;console.error(e)}
+ draw();
+}
+function showPage(){if(!toolkit)return;try{$('engraved').innerHTML=toolkit.renderToSVG(Number($('pageSelect').value)||1,{});const svg=$('engraved').querySelector('svg');if(svg){svg.style.width='100%';svg.style.height='auto';svg.style.minWidth='900px'}}catch(e){$('engraved').textContent=e.message}}
+function mode(){const eng=$('notationMode').value==='engraved';$('engraved').style.display=eng?'block':'none';$('scoreScroll').style.display=eng?'none':'block'}
 function draw(){
 const w=2100,h=1060,dpr=Math.min(2,window.devicePixelRatio||1);
 if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);}
@@ -94,6 +108,6 @@ for(let v=0;v<10;v++){
 if(playing&&ac){const elapsed=Math.max(0,(ac.currentTime-begin)*1000),x=xFor(elapsed);ctx.strokeStyle='#b6483f';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,35);ctx.lineTo(x,staffTop+gap*9+staffHeight+10);ctx.stroke()}
 }
 function play(){if(!notes.length)return;stop();ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume();begin=ac.currentTime+.1;playing=true;$('play').textContent='▶ RESTART';const master=ac.createGain();master.gain.value=.3;master.connect(ac.destination);const end=Math.max(...notes.map(n=>n.onsetMs+n.durationMs));notes.forEach(n=>{let time=begin+n.onsetMs/1000,dur=Math.max(.025,n.durationMs/1000),freq=440*Math.pow(2,(n.pitchCents/100-69)/12);if(freq>12000||freq<20)return;let osc=ac.createOscillator(),gain=ac.createGain(),pan=ac.createStereoPanner();osc.type='sine';osc.frequency.value=freq;pan.pan.value=((n.voice-1)/9)*1.4-.7;let level=Math.min(.065,.012+.035*(n.velocity||60)/127);gain.gain.setValueAtTime(0,time);gain.gain.linearRampToValueAtTime(level,time+Math.min(.02,dur*.25));gain.gain.setValueAtTime(level,time+Math.max(.02,dur-.025));gain.gain.linearRampToValueAtTime(0,time+dur);osc.connect(gain).connect(pan).connect(master);osc.start(time);osc.stop(time+dur+.02);voices.push({osc})});function tick(){if(!playing)return;if((ac.currentTime-begin)*1000>end+100){playing=false;$('play').textContent='▶ PLAY';draw();return}draw();timer=requestAnimationFrame(tick)}tick()}
-$('generate').addEventListener('click',generateWeb);$('play').addEventListener('click',play);$('stop').addEventListener('click',stop);window.addEventListener('resize',draw);$('profile').addEventListener('change',()=>{let tempos=[60,50,100,40,60,152];$('tempo').value=tempos[Number($('profile').value)];generateWeb()});generateWeb();
+$('generate').addEventListener('click',generateWeb);$('play').addEventListener('click',play);$('stop').addEventListener('click',stop);window.addEventListener('resize',draw);$('notationMode').addEventListener('change',mode);$('pageSelect').addEventListener('change',showPage);$('exportXML').addEventListener('click',()=>{if(!xmlString)return;const u=URL.createObjectURL(new Blob([xmlString],{type:'application/vnd.recordare.musicxml+xml'}));const a=document.createElement('a');a.href=u;a.download='webern-op10-generated.musicxml';a.click();setTimeout(()=>URL.revokeObjectURL(u),500)});$('profile').addEventListener('change',()=>{let tempos=[60,50,100,40,60,152];$('tempo').value=tempos[Number($('profile').value)];generateWeb()});generateWeb();let attempts=0;function boot(){if(window.verovio&&window.verovio.module){window.verovio.module.onRuntimeInitialized=()=>{try{toolkit=new window.verovio.toolkit();renderScore()}catch(e){$('engraved').textContent=e.message}}}else if(attempts++<100)setTimeout(boot,150);else $('engraved').textContent='Verovio failed to load. Choose proportional timeline.'}boot();mode();
 })();
 </script></body></html>
