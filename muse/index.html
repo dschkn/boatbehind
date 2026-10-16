@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#f7f7f4">
+<title>Muse — a place for thoughts</title>
+<style>
+:root{font-family:Arial,Helvetica,sans-serif;color:#252525;background:#f7f7f4;font-synthesis:none}*{box-sizing:border-box}html,body,#app{margin:0;width:100%;height:100%;overflow:hidden}button{font:inherit;cursor:pointer}button:focus-visible,.note:focus-visible{outline:2px solid #d04b3f;outline-offset:3px}.topbar{position:absolute;z-index:20;top:0;left:0;right:0;height:66px;display:flex;align-items:center;justify-content:space-between;padding:0 30px;pointer-events:none}.brand,.actions{pointer-events:auto}.brand{font-size:15px;font-weight:600;letter-spacing:.15em}.brand em{font-style:normal;color:#b74438}.actions{display:flex;align-items:center;gap:8px}.tool{border:0;background:transparent;border-radius:6px;color:#555;padding:9px 11px;font-size:12px}.tool:hover{background:#eaeae5}.status{font-size:11px;color:#858580;margin-right:5px}.canvas{position:absolute;inset:0;overflow:hidden;touch-action:none;cursor:grab;background-color:#f7f7f4;background-image:radial-gradient(#d8d8d2 .7px,transparent .8px);background-size:24px 24px;background-position:center}.canvas.panning{cursor:grabbing}.stage{position:absolute;left:0;top:0;width:0;height:0;transform-origin:0 0}.note{position:absolute;min-width:180px;max-width:420px;width:260px;min-height:44px;padding:12px 15px;border:1px solid transparent;border-radius:3px;background:#fffefc;box-shadow:0 4px 18px rgba(0,0,0,.045);cursor:move;user-select:none;touch-action:none}.note.selected{border-color:#c8c8c1;box-shadow:0 8px 28px rgba(0,0,0,.085)}.note textarea{display:block;width:100%;height:auto;min-height:26px;resize:none;overflow:hidden;font:16px/1.48 Arial,Helvetica,sans-serif;letter-spacing:-.015em;color:#303030;background:transparent;border:0;outline:0;user-select:text;touch-action:auto}.note textarea::placeholder{color:#b8b7b1}.note-toolbar{display:flex;justify-content:flex-end;gap:4px;position:absolute;right:0;top:-31px;background:#fff;border:1px solid #ecebe6;border-radius:5px;padding:3px;box-shadow:0 2px 10px #0000000d}.note-toolbar button{border:0;background:transparent;color:#777;padding:3px 7px;font-size:12px}.note-toolbar button:hover{color:#ba4035}.hint{position:absolute;bottom:25px;left:30px;color:#92918b;font-size:12px;pointer-events:none}.zoom{position:absolute;bottom:22px;right:25px;display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #efeee8;box-shadow:0 3px 12px #0000000b;border-radius:8px;padding:4px}.zoom button{border:0;background:transparent;padding:6px 10px;color:#54544e}.zoom span{font-size:12px;min-width:45px;text-align:center;color:#777}.empty{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;text-align:center;color:#b2b1aa}.empty strong{display:block;font-size:26px;font-weight:400;letter-spacing:-.06em;margin-bottom:10px;color:#999992}.empty span{font-size:13px}.toast{position:absolute;bottom:70px;left:50%;transform:translateX(-50%);padding:10px 15px;background:#333;color:#fff;font-size:12px;border-radius:6px;display:none}@media(max-width:600px){.topbar{height:60px;padding:0 15px}.brand{font-size:13px}.tool{padding:8px}.status{display:none}.hint{bottom:19px;left:15px;font-size:10px;max-width:175px}.zoom{bottom:13px;right:12px}.note{width:230px}.empty strong{font-size:23px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="canvas" class="canvas" aria-label="Свободная доска для заметок"><div id="stage" class="stage"></div></div>
+<header class="topbar"><div class="brand">MUSE<span style="color:#b74438">.</span></div><div class="actions"><span id="status" class="status">Сохранено локально</span><button id="add" class="tool" title="Добавить текст">＋ Текст</button><button id="export" class="tool" title="Экспортировать заметки">↗ Экспорт</button></div></header>
+<div id="empty" class="empty"><strong>Место для мыслей.</strong><span>Двойной щелчок, чтобы начать писать</span></div>
+<div class="hint">Двойной щелчок: текст · Перетаскивание: перемещение</div>
+<div class="zoom"><button id="out" aria-label="Уменьшить">−</button><span id="scale-label">100%</span><button id="in" aria-label="Увеличить">+</button><button id="reset" aria-label="Сбросить вид" title="Сбросить вид">⌖</button></div>
+<div id="toast" class="toast" role="status"></div>
+</div>
+<script>
+(()=>{
+'use strict';
+const KEY='boatbehind-muse-v1';
+const $=id=>document.getElementById(id);
+const canvas=$('canvas'),stage=$('stage');
+let data={notes:[],view:{x:innerWidth/2,y:innerHeight/2,scale:1}};
+try{const saved=JSON.parse(localStorage.getItem(KEY));if(saved&&Array.isArray(saved.notes)&&saved.view)data={notes:saved.notes.filter(n=>typeof n.text==='string'&&Number.isFinite(n.x)&&Number.isFinite(n.y)),view:saved.view};}catch(e){console.warn('Saved board unavailable',e);}
+let selected=null,gesture=null,saveTimer=null;
+const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random().toString(36).slice(2);
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data));$('status').textContent='Сохранено локально';}catch(e){$('status').textContent='Не удалось сохранить';notify('Хранилище браузера недоступно. Сделай экспорт.');}}
+function queueSave(){$('status').textContent='Сохранение…';clearTimeout(saveTimer);saveTimer=setTimeout(save,250);}
+function notify(s){const el=$('toast');el.textContent=s;el.style.display='block';clearTimeout(notify.timer);notify.timer=setTimeout(()=>el.style.display='none',3000);}
+function toWorld(x,y){return{x:(x-data.view.x)/data.view.scale,y:(y-data.view.y)/data.view.scale};}
+function setView(){const v=data.view;stage.style.transform='translate('+v.x+'px,'+v.y+'px) scale('+v.scale+')';$('scale-label').textContent=Math.round(v.scale*100)+'%';queueSave();}
+function select(id){selected=id;document.querySelectorAll('.note').forEach(el=>{el.classList.toggle('selected',el.dataset.id===id);const tools=el.querySelector('.note-toolbar');if(tools)tools.hidden=el.dataset.id!==id;});}
+function autosize(input){input.style.height='auto';input.style.height=Math.max(26,input.scrollHeight)+'px';}
+function draw(){stage.replaceChildren();for(const n of data.notes){const el=document.createElement('article');el.className='note';el.dataset.id=n.id;el.style.left=n.x+'px';el.style.top=n.y+'px';el.style.width=(n.w||260)+'px';const input=document.createElement('textarea');input.placeholder='Твоя мысль…';input.value=n.text;input.setAttribute('aria-label','Текст заметки');input.rows=1;input.addEventListener('input',()=>{n.text=input.value;autosize(input);queueSave();});input.addEventListener('focus',()=>select(n.id));input.addEventListener('pointerdown',e=>e.stopPropagation());const tools=document.createElement('div');tools.className='note-toolbar';tools.hidden=true;const del=document.createElement('button');del.textContent='Удалить';del.title='Удалить заметку';del.addEventListener('click',e=>{e.stopPropagation();if(!confirm('Удалить эту заметку?'))return;data.notes=data.notes.filter(x=>x.id!==n.id);select(null);draw();queueSave();});tools.append(del);el.append(input,tools);
+el.addEventListener('pointerdown',e=>{if(e.target===input||e.target===del||e.target===tools)return;if(e.button!==0)return;e.stopPropagation();select(n.id);gesture={kind:'note',id:n.id,startX:e.clientX,startY:e.clientY,x:n.x,y:n.y};el.setPointerCapture(e.pointerId);});
+el.addEventListener('pointermove',e=>{if(!gesture||gesture.kind!=='note'||gesture.id!==n.id)return;n.x=gesture.x+(e.clientX-gesture.startX)/data.view.scale;n.y=gesture.y+(e.clientY-gesture.startY)/data.view.scale;el.style.left=n.x+'px';el.style.top=n.y+'px';});
+el.addEventListener('pointerup',()=>{if(gesture?.kind==='note'){gesture=null;queueSave();}});
+el.addEventListener('dblclick',e=>{e.stopPropagation();input.focus();});
+stage.append(el);requestAnimationFrame(()=>autosize(input));}select(selected);$('empty').hidden=data.notes.length>0;}
+function addAt(x,y){const p=toWorld(x,y),n={id:uid(),x:p.x,y:p.y,w:260,text:''};data.notes.push(n);draw();select(n.id);queueSave();requestAnimationFrame(()=>{const input=stage.querySelector('[data-id="'+n.id+'"] textarea');input?.focus();});}
+canvas.addEventListener('dblclick',e=>{if(e.target===canvas||e.target===stage)addAt(e.clientX,e.clientY);});
+canvas.addEventListener('pointerdown',e=>{if(e.target!==canvas&&e.target!==stage)return;if(e.button!==0&&e.button!==1)return;select(null);gesture={kind:'pan',startX:e.clientX,startY:e.clientY,x:data.view.x,y:data.view.y};canvas.classList.add('panning');canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{if(gesture?.kind!=='pan')return;data.view.x=gesture.x+e.clientX-gesture.startX;data.view.y=gesture.y+e.clientY-gesture.startY;stage.style.transform='translate('+data.view.x+'px,'+data.view.y+'px) scale('+data.view.scale+')';});
+canvas.addEventListener('pointerup',()=>{if(gesture?.kind==='pan'){gesture=null;canvas.classList.remove('panning');queueSave();}});
+canvas.addEventListener('wheel',e=>{if(e.target.closest('textarea'))return;e.preventDefault();if(e.ctrlKey||e.metaKey){zoomTo(data.view.scale*Math.exp(-e.deltaY*.01),e.clientX,e.clientY);}else{data.view.x-=e.deltaX;data.view.y-=e.deltaY;setView();}},{passive:false});
+function zoomTo(s,x=innerWidth/2,y=innerHeight/2){s=Math.max(.3,Math.min(3,s));const p=toWorld(x,y);data.view.scale=s;data.view.x=x-p.x*s;data.view.y=y-p.y*s;setView();}
+$('add').onclick=()=>addAt(innerWidth/2,innerHeight/2);
+$('in').onclick=()=>zoomTo(data.view.scale*1.2);
+$('out').onclick=()=>zoomTo(data.view.scale/1.2);
+$('reset').onclick=()=>{data.view={x:innerWidth/2,y:innerHeight/2,scale:1};setView();};
+$('export').onclick=()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),...data},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='muse-'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);notify('Резервная копия скачана');};
+window.addEventListener('keydown',e=>{if((e.key==='Delete'||e.key==='Backspace')&&selected&&!['TEXTAREA','INPUT'].includes(document.activeElement.tagName)){const id=selected;data.notes=data.notes.filter(n=>n.id!==id);select(null);draw();queueSave();}if(e.key==='Escape'){document.activeElement.blur();select(null);}});
+window.addEventListener('pagehide',save);
+draw();setView();
+})();
+</script>
+</body>
+</html>
