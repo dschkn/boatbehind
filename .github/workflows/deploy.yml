@@ -56,6 +56,6 @@ jobs:
           rsync -az --delete \
             --exclude '.git/' \
             --exclude '.github/' \
-            --exclude 'README.md' \\
-            --exclude 'muse-source/' \\
+            --exclude 'README.md' \
+            --exclude 'muse-source/' \
             ./ dschkn@168.222.203.229:/var/www/boatbehind/
