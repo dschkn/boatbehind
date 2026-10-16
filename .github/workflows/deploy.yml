@@ -28,8 +28,18 @@ jobs:
         with:
           repository: dschkn/muse
           ref: main
-          path: muse
+          path: muse-source
           persist-credentials: false
+
+      - name: Publish Muse login only when API is ready
+        run: |
+          code="$(curl -L -sS --max-time 8 -o /dev/null -w '%{http_code}' https://boatbehind.online/muse-api/board || true)"
+          if [ "$code" = "401" ]; then
+            cp muse-source/index.html muse/index.html
+            echo "Muse API ready, releasing server-backed client"
+          else
+            echo "Muse API not ready (HTTP $code), keeping working browser-local client"
+          fi
 
       - name: Configure SSH
         env:
@@ -46,5 +56,6 @@ jobs:
           rsync -az --delete \
             --exclude '.git/' \
             --exclude '.github/' \
-            --exclude 'README.md' \
+            --exclude 'README.md' \\
+            --exclude 'muse-source/' \\
             ./ dschkn@168.222.203.229:/var/www/boatbehind/
