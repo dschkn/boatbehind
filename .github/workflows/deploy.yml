@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
   group: boatbehind-production
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -18,8 +20,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository
+      - name: Check out website
         uses: actions/checkout@v4
+
+      - name: Check out latest Muse from its own repository
+        uses: actions/checkout@v4
+        with:
+          repository: dschkn/muse
+          ref: main
+          path: muse
+          persist-credentials: false
 
       - name: Configure SSH
         env:
@@ -31,7 +41,7 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 168.222.203.229 >> ~/.ssh/known_hosts
 
-      - name: Deploy static site
+      - name: Deploy website and latest Muse
         run: |
           rsync -az --delete \
             --exclude '.git/' \
