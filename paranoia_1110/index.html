@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>GLITCH FIELD / GENERATOR</title>
+<style>
+:root{color-scheme:dark;--bg:#111416;--fg:#edf0f2;--muted:#858b8e;--line:#373c40}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif}body{display:flex;flex-direction:column}.top{display:flex;align-items:center;justify-content:space-between;padding:20px 26px;border-bottom:1px solid var(--line);gap:18px;flex-wrap:wrap}.brand{font-size:13px;letter-spacing:.075em}.sub{color:var(--muted);font-size:11px;margin-left:16px}.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}button{appearance:none;border:1px solid #626a70;color:var(--fg);background:transparent;padding:10px 14px;font:inherit;font-size:12px;cursor:pointer}button:hover,button:focus-visible{background:#292f34}button.primary{background:#edf0f2;color:#111416;border-color:#edf0f2}.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:32px 22px 28px;min-height:0}.paper{width:min(72vw,690px);aspect-ratio:0.70;background:#fff;box-shadow:0 10px 55px #0005;position:relative}.paper canvas{width:100%;height:100%;display:block;image-rendering:pixelated}.foot{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:11px;letter-spacing:.03em;padding:13px 26px;border-top:1px solid var(--line);gap:12px;flex-wrap:wrap}.settings{display:flex;align-items:center;gap:16px;flex-wrap:wrap}label{display:flex;align-items:center;gap:8px}input[type=range]{width:94px;accent-color:#edf0f2}input[type=number]{color:var(--fg);background:transparent;border:1px solid var(--line);width:85px;padding:6px;font:inherit;font-size:11px}@media(max-width:650px){.top{padding:16px}.sub{display:none}.wrap{padding:18px 14px}.paper{width:min(90vw,480px)}.foot{padding:13px 16px}.controls{gap:6px}button{padding:9px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">GLITCH FIELD <span class="sub">GENERATIVE TYPOLOGY / 001</span></div><div class="controls"><button id="new" class="primary">NEW COMPOSITION ↗</button><button id="animate">ANIMATE: OFF</button><button id="save">EXPORT PNG ↓</button></div></header>
+<main class="wrap"><div class="paper"><canvas id="art" width="1400" height="2000" aria-label="Procedurally generated black and white glitch artwork"></canvas></div></main>
+<footer class="foot"><div class="settings"><label>COMPLEXITY <input id="complexity" type="range" min="2" max="10" value="7" /></label><label>DISRUPTION <input id="disruption" type="range" min="0" max="10" value="6" /></label><label>SEED <input id="seed" type="number" value="20261017" step="1" /></label></div><div>SPACE: GENERATE &nbsp;·&nbsp; S: SAVE &nbsp;·&nbsp; ORIGINAL PROCEDURAL OUTPUT</div></footer>
+<script>
+(() => {
+'use strict';
+const canvas=document.getElementById('art'),c=canvas.getContext('2d',{alpha:false});
+const seedEl=document.getElementById('seed'), complexity=document.getElementById('complexity'),disruption=document.getElementById('disruption');
+const W=canvas.width,H=canvas.height;
+let timer=null;
+function rng(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+function render(){
+ const r=rng(Number(seedEl.value)||1),rand=(a,b)=>a+r()*(b-a),pick=a=>a[Math.floor(r()*a.length)],comp=+complexity.value/10,glitch=+disruption.value/10;
+ c.fillStyle='#f4f6f7';c.fillRect(0,0,W,H);
+ // Repeated, nested orthogonal contours. Each line turns at right angles.
+ const paths=Math.round(13+comp*25);
+ for(let p=0;p<paths;p++){
+  const cx=rand(-180,W+180),cy=rand(-130,H+130),rh=rand(85,330),rw=rand(90,430),step=rand(8,21);
+  const mode=pick([0,0,1,2]);let x=cx-rw/2,y=cy-rh/2,w=rw,h=rh;
+  let layers=Math.floor(rand(7,22+comp*28));
+  for(let i=0;i<layers;i++){
+    if(w<4||h<4)break;
+    const s=Math.max(2.5,step*rand(.7,1.12));
+    c.strokeStyle=r()<.065?'#f4f6f7':'#121518';c.lineWidth=s*rand(.37,.76);
+    c.beginPath();
+    const corner=mode===0?pick([0,1,2,3]):mode===1?0:2;
+    // Deliberately incomplete rectilinear outlines create maze branches.
+    const cut=rand(.08,.42);
+    if(corner===0){c.moveTo(x,y+h);c.lineTo(x,y);c.lineTo(x+w,y);c.lineTo(x+w,y+h*(1-cut));}
+    else if(corner===1){c.moveTo(x,y);c.lineTo(x+w,y);c.lineTo(x+w,y+h);c.lineTo(x+w*cut,y+h);}
+    else if(corner===2){c.moveTo(x+w,y);c.lineTo(x+w,y+h);c.lineTo(x,y+h);c.lineTo(x,y+h*cut);}
+    else{c.moveTo(x+w,y+h);c.lineTo(x,y+h);c.lineTo(x,y);c.lineTo(x+w*(1-cut),y);}
+    c.stroke();
+    x+=s;y+=s;w-=2*s;h-=2*s;
+  }
+ }
+ // Dense mechanical striping: long bands, abrupt shifts, stair steps.
+ for(let band=0;band<Math.round(34+comp*70);band++){
+   const horizontal=r()<.63;
+   let x=rand(-110,W),y=rand(-110,H),length=rand(35,590),unit=rand(2.5,13),count=Math.floor(rand(3,18));
+   for(let i=0;i<count;i++){
+     c.fillStyle=r()<.09?'#f4f6f7':'#16191c';
+     let a=i*unit*1.45,shift=Math.floor(rand(-4,5))*unit;
+     if(horizontal)c.fillRect(x+shift,y+a,length*rand(.5,1),Math.max(1,unit*.62));
+     else c.fillRect(x+a,y+shift,Math.max(1,unit*.62),length*rand(.5,1));
+   }
+ }
+ // A few thick interruptions cut the strict weave.
+ for(let n=0;n<Math.round(45*comp);n++){
+  c.fillStyle=r()<.57?'#15181b':'#f4f6f7';
+  c.fillRect(rand(-60,W),rand(-60,H),rand(12,135),rand(3,25));
+ }
+ // Pixel-snapped displacement: render slices from the finished field.
+ const scratch=document.createElement('canvas');scratch.width=W;scratch.height=H;
+ const sc=scratch.getContext('2d');sc.drawImage(canvas,0,0);
+ for(let n=0;n<Math.round(10+glitch*115);n++){
+   const y=Math.floor(rand(0,H-20)),height=Math.floor(rand(2,glitch*44+5)),dx=Math.round(rand(-1,1)*glitch*125);
+   c.drawImage(scratch,0,y,W,Math.min(height,H-y),dx,y,W,Math.min(height,H-y));
+ }
+ // Clean mask-like vertical gutters preserve poster-scale hierarchy.
+ for(let j=0;j<Math.round(2+comp*6);j++){
+  if(r()>.63){const x=rand(0,W),width=rand(3,12);c.fillStyle=pick(['#15181b','#f4f6f7']);c.fillRect(x,rand(0,H*.75),width,rand(120,H*.42));}
+ }
+}
+function next(){seedEl.value=(Math.floor(Math.random()*2147483647)+1);render()}
+function save(){const a=document.createElement('a');a.download=`glitch-field-${seedEl.value}.png`;a.href=canvas.toDataURL('image/png');a.click()}
+function stop(){if(timer!==null){clearInterval(timer);timer=null}document.getElementById('animate').textContent='ANIMATE: OFF'}
+document.getElementById('new').onclick=next;document.getElementById('save').onclick=save;
+document.getElementById('animate').onclick=()=>{if(timer!==null){stop();return}timer=setInterval(next,850);document.getElementById('animate').textContent='ANIMATE: ON'};
+seedEl.oninput=render;complexity.oninput=render;disruption.oninput=render;
+document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;if(e.code==='Space'){e.preventDefault();next()}else if(e.key.toLowerCase()==='s')save()});
+render();
+})();
+</script>
+</body>
+</html>
