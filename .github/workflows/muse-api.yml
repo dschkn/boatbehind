@@ -51,10 +51,24 @@ jobs:
         run: |
           printf '%s' "$MUSE_PASSWORD" | ssh dschkn@168.222.203.229 'umask 077; cat > ~/.config/muse/password'
 
-      - name: Restart existing Muse service
+      - name: Restart Muse API as deploy user
         run: |
-          ssh dschkn@168.222.203.229 "pkill -f 'python3 .*/muse-api/[a]pp.py' || true"
-          sleep 4
+          ssh dschkn@168.222.203.229 <<'REMOTE'
+          pkill -f '/muse-api/[a]pp.py' || true
+          sleep 1
+          nohup env \
+            MUSE_HOST=127.0.0.1 \
+            MUSE_PORT=8765 \
+            MUSE_DB="$HOME/.local/share/muse/board.sqlite3" \
+            MUSE_PASSWORD_FILE="$HOME/.config/muse/password" \
+            MUSE_SESSION_SECRET_FILE="$HOME/.config/muse/session-secret" \
+            /usr/bin/python3 "$HOME/muse-api/app.py" >> "$HOME/muse-api/runtime.log" 2>&1 &
+          sleep 3
+          prefixed="$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/muse-api/board || true)"
+          stripped="$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8765/board || true)"
+          echo "Local API: prefixed=$prefixed stripped=$stripped"
+          test "$prefixed" = '401' && test "$stripped" = '401'
+          REMOTE
 
       - name: Verify authentication endpoint
         run: |
