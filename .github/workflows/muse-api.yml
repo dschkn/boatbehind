@@ -70,35 +70,26 @@ jobs:
           test "$prefixed" = '401' && test "$stripped" = '401'
           REMOTE
 
-      - name: Ensure Muse reverse proxy route
+      - name: Load Muse reverse proxy route through Caddy API
         run: |
-          ssh dschkn@168.222.203.229 'python3 -' <<'PY'
-          import json
-          from urllib.parse import quote
-          from urllib.request import Request, urlopen
-
-          base='http://127.0.0.1:2019'
-          with urlopen(base+'/config/apps/http/servers',timeout=5) as response:
-              servers=json.load(response)
-          for name,server in servers.items():
-              print('Caddy server',name,'listens on',server.get('listen',[]))
-          target=next((name for name,server in servers.items() if any(':443' in address for address in server.get('listen',[])) and 'boatbehind.online' in json.dumps(server)),None)
-          if not target:
-              raise SystemExit('boatbehind.online server not found in Caddy runtime config')
-          if 'muse-api' not in json.dumps(servers[target]):
-              route={
-                  'match':[{'host':['boatbehind.online'],'path':['/muse-api/*']}],
-                  'handle':[{'handler':'reverse_proxy','upstreams':[{'dial':'127.0.0.1:8765'}]}],
-                  'terminal':True,
-              }
-              url=base+'/config/apps/http/servers/'+quote(target,safe='')+'/routes/0'
-              request=Request(url,data=json.dumps(route).encode(),method='POST',headers={'Content-Type':'application/json'})
-              with urlopen(request,timeout=5) as response:
-                  response.read()
-              print('Muse reverse proxy route added to HTTPS server',target)
-          else:
-              print('Muse reverse proxy route already present in HTTPS server',target)
+          ssh dschkn@168.222.203.229 <<'REMOTE'
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          source=Path('/etc/caddy/Caddyfile').read_text()
+          match=re.search(r'(?m)^([^\n{}]*boatbehind\.online[^\n{}]*\{)[ \t]*$',source)
+          if not match:
+              raise SystemExit('boatbehind.online Caddy site block not found')
+          route='\n\thandle /muse-api/* {\n\t\treverse_proxy 127.0.0.1:8765\n\t}'
+          changed=source[:match.end()]+route+source[match.end():]
+          Path('/tmp/Caddyfile.muse').write_text(changed)
           PY
+          caddy adapt --config /tmp/Caddyfile.muse --pretty > /tmp/caddy-muse.json
+          curl -fsS -X POST -H 'Content-Type: application/json' --data-binary @/tmp/caddy-muse.json http://127.0.0.1:2019/load
+          direct="$(curl -ksS --resolve boatbehind.online:443:127.0.0.1 -o /dev/null -w '%{http_code}' https://boatbehind.online/muse-api/board)"
+          echo "Caddy-local HTTPS API: $direct"
+          test "$direct" = '401'
+          REMOTE
 
       - name: Verify authentication endpoint
         run: |
