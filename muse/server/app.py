@@ -77,7 +77,9 @@ class Handler(BaseHTTPRequestHandler):
             return self.json(401,{'error':'unauthorized'})
         with lock:attempts.pop(ip,None)
         payload=str(int(time.time()))
-        self.json(200,{'ok':True},'muse_session='+payload+'.'+sign(payload)+'; Path=/muse-api; HttpOnly; Secure; SameSite=Strict; Max-Age=1209600')
+        with lock,sqlite3.connect(DB) as c:
+            rev,body=c.execute('SELECT revision,body FROM board WHERE id=1').fetchone()
+        self.json(200,{'ok':True,'revision':rev,'board':json.loads(body)},'muse_session='+payload+'.'+sign(payload)+'; Path=/muse-api; HttpOnly; Secure; SameSite=Strict; Max-Age=1209600')
     def do_PUT(self):
         if not self.origin_ok():return self.json(403,{'error':'origin'})
         if self.path not in ('/muse-api/board','/board'):return self.json(404,{'error':'not_found'})
