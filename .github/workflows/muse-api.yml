@@ -80,7 +80,9 @@ jobs:
           base='http://127.0.0.1:2019'
           with urlopen(base+'/config/apps/http/servers',timeout=5) as response:
               servers=json.load(response)
-          target=next((name for name,server in servers.items() if 'boatbehind.online' in json.dumps(server)),None)
+          for name,server in servers.items():
+              print('Caddy server',name,'listens on',server.get('listen',[]))
+          target=next((name for name,server in servers.items() if any(':443' in address for address in server.get('listen',[])) and 'boatbehind.online' in json.dumps(server)),None)
           if not target:
               raise SystemExit('boatbehind.online server not found in Caddy runtime config')
           if 'muse-api' not in json.dumps(servers[target]):
@@ -93,9 +95,9 @@ jobs:
               request=Request(url,data=json.dumps(route).encode(),method='POST',headers={'Content-Type':'application/json'})
               with urlopen(request,timeout=5) as response:
                   response.read()
-              print('Muse reverse proxy route added to',target)
+              print('Muse reverse proxy route added to HTTPS server',target)
           else:
-              print('Muse reverse proxy route already present in',target)
+              print('Muse reverse proxy route already present in HTTPS server',target)
           PY
 
       - name: Verify authentication endpoint
