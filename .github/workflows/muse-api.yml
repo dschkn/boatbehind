@@ -70,6 +70,14 @@ jobs:
           test "$prefixed" = '401' && test "$stripped" = '401'
           REMOTE
 
+      - name: Inspect reverse proxy access
+        run: |
+          ssh dschkn@168.222.203.229 <<'REMOTE'
+          admin="$(curl -sS -o /tmp/caddy-config.json -w '%{http_code}' http://127.0.0.1:2019/config/ || true)"
+          echo "Caddy admin API: $admin"
+          grep -nE 'boatbehind|muse-api|reverse_proxy' /etc/caddy/Caddyfile || true
+          REMOTE
+
       - name: Verify authentication endpoint
         run: |
           result="$(curl -sS --max-time 12 -o /dev/null -w '%{http_code}' https://boatbehind.online/muse-api/board)"
