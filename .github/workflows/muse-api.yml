@@ -1,4 +1,5 @@
 name: Install Muse API
+# Re-run after rotating MUSE_PASSWORD.
 
 on:
   push:
