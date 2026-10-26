@@ -70,13 +70,33 @@ jobs:
           test "$prefixed" = '401' && test "$stripped" = '401'
           REMOTE
 
-      - name: Inspect reverse proxy access
+      - name: Ensure Muse reverse proxy route
         run: |
-          ssh dschkn@168.222.203.229 <<'REMOTE'
-          admin="$(curl -sS -o /tmp/caddy-config.json -w '%{http_code}' http://127.0.0.1:2019/config/ || true)"
-          echo "Caddy admin API: $admin"
-          grep -nE 'boatbehind|muse-api|reverse_proxy' /etc/caddy/Caddyfile || true
-          REMOTE
+          ssh dschkn@168.222.203.229 'python3 -' <<'PY'
+          import json
+          from urllib.parse import quote
+          from urllib.request import Request, urlopen
+
+          base='http://127.0.0.1:2019'
+          with urlopen(base+'/config/apps/http/servers',timeout=5) as response:
+              servers=json.load(response)
+          target=next((name for name,server in servers.items() if 'boatbehind.online' in json.dumps(server)),None)
+          if not target:
+              raise SystemExit('boatbehind.online server not found in Caddy runtime config')
+          if 'muse-api' not in json.dumps(servers[target]):
+              route={
+                  'match':[{'host':['boatbehind.online'],'path':['/muse-api/*']}],
+                  'handle':[{'handler':'reverse_proxy','upstreams':[{'dial':'127.0.0.1:8765'}]}],
+                  'terminal':True,
+              }
+              url=base+'/config/apps/http/servers/'+quote(target,safe='')+'/routes/0'
+              request=Request(url,data=json.dumps(route).encode(),method='POST',headers={'Content-Type':'application/json'})
+              with urlopen(request,timeout=5) as response:
+                  response.read()
+              print('Muse reverse proxy route added to',target)
+          else:
+              print('Muse reverse proxy route already present in',target)
+          PY
 
       - name: Verify authentication endpoint
         run: |
