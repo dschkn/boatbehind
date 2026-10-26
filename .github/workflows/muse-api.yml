@@ -95,5 +95,5 @@ jobs:
 
       - name: Publish authenticated Muse interface
         run: |
-          rsync -az muse-src/index.html dschkn@168.222.203.229:/var/www/boatbehind/muse/index.html
+          rsync -az muse/index.html dschkn@168.222.203.229:/var/www/boatbehind/muse/index.html
           echo "Muse server-backed workspace deployed"
