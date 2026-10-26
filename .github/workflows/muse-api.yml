@@ -1,5 +1,5 @@
 name: Install Muse API
-# Re-run after rotating MUSE_PASSWORD.
+# Deploy Muse API and refresh its runtime configuration.
 
 on:
   push:
