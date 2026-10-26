@@ -1,6 +1,11 @@
 name: Install Muse API
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/muse-api.yml'
   workflow_dispatch:
 
 permissions:
