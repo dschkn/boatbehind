@@ -92,8 +92,3 @@ jobs:
         run: |
           result="$(curl -sS --max-time 12 -o /dev/null -w '%{http_code}' https://boatbehind.online/muse-api/board)"
           test "$result" = '401' || { echo "Expected 401 from unauthenticated API; got $result"; exit 1; }
-
-      - name: Publish authenticated Muse interface
-        run: |
-          rsync -az muse/index.html dschkn@168.222.203.229:/var/www/boatbehind/muse/index.html
-          echo "Muse server-backed workspace deployed"
