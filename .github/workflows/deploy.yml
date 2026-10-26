@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-  schedule:
-    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 concurrency:
@@ -23,24 +21,6 @@ jobs:
       - name: Check out website
         uses: actions/checkout@v4
 
-      - name: Check out latest Muse from its own repository
-        uses: actions/checkout@v4
-        with:
-          repository: dschkn/muse
-          ref: main
-          path: muse-source
-          persist-credentials: false
-
-      - name: Publish Muse login only when API is ready
-        run: |
-          code="$(curl -L -sS --max-time 8 -o /dev/null -w '%{http_code}' https://boatbehind.online/muse-api/board || true)"
-          if [ "$code" = "401" ]; then
-            cp muse-source/index.html muse/index.html
-            echo "Muse API ready, releasing server-backed client"
-          else
-            echo "Muse API not ready (HTTP $code), keeping working browser-local client"
-          fi
-
       - name: Configure SSH
         env:
           DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
@@ -51,11 +31,11 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -H 168.222.203.229 >> ~/.ssh/known_hosts
 
-      - name: Deploy website and latest Muse
+      - name: Deploy website and Muse
         run: |
           rsync -az --delete \
             --exclude '.git/' \
             --exclude '.github/' \
             --exclude 'README.md' \
-            --exclude 'muse-source/' \
+            --exclude 'muse/server/' \
             ./ dschkn@168.222.203.229:/var/www/boatbehind/

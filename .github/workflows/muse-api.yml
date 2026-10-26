@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - 'muse/server/**'
       - '.github/workflows/muse-api.yml'
   workflow_dispatch:
 
@@ -16,13 +17,8 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - name: Download Muse source
+      - name: Check out website
         uses: actions/checkout@v4
-        with:
-          repository: dschkn/muse
-          ref: main
-          path: muse-src
-          persist-credentials: false
 
       - name: Check secret configuration
         env:
@@ -44,7 +40,7 @@ jobs:
       - name: Upload backend files
         run: |
           ssh dschkn@168.222.203.229 'mkdir -p ~/muse-api ~/.config/muse && chmod 700 ~/.config/muse'
-          rsync -az muse-src/server/app.py dschkn@168.222.203.229:~/muse-api/app.py
+          rsync -az muse/server/app.py dschkn@168.222.203.229:~/muse-api/app.py
 
       - name: Set private password without putting it in git
         env:
