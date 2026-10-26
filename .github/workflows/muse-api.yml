@@ -51,8 +51,10 @@ jobs:
         run: |
           printf '%s' "$MUSE_PASSWORD" | ssh dschkn@168.222.203.229 'umask 077; cat > ~/.config/muse/password'
 
-      - name: Configure systemd and Caddy safely
-        run: ssh dschkn@168.222.203.229 'bash -s' < muse-src/server/install.sh
+      - name: Restart existing Muse service
+        run: |
+          ssh dschkn@168.222.203.229 "pkill -f 'python3 .*/muse-api/[a]pp.py' || true"
+          sleep 4
 
       - name: Verify authentication endpoint
         run: |
